@@ -1,0 +1,92 @@
+{
+  "production": false,
+  "environment": "development",
+  "betaLimit": 100,
+
+  "offlineMode": true,
+  "jwtSecret": "9uu+*3q$#8m-*eeoko)bc)=ped#et5%a#+njahro&e#=mb_kyt",
+  "baseUrl": "http://localhost:3000",
+  "frontUrl": "http://localhost:8080",
+  "adminEmails": [],
+
+  "session": {
+    "secure": false,
+    "secret": "iXUGzOVl6f"
+  },
+
+  "cronWebhookUrl": "",
+  "contactFormWebhookUrl": "",
+  "cronDonationCreatedhookUrl": "",
+
+  "database": {
+    "name": "minazuki",
+    "username": "minazuki",
+    "password": "minazuki_pwd",
+    "port": "27017",
+    "host": "127.0.0.1"
+  },
+  "databaseTest": {
+    "name": "minazuki-test",
+    "username": "minazuki",
+    "password": "minazuki_pwd",
+    "port": "27018",
+    "host": "127.0.0.1"
+  },
+  "databaseCloud": {
+    "name": "mochizuki",
+    "connection": "mochizuki-kud7l.gcp.mongodb.net/test?retryWrites=true",
+    "username": "MochizukiDev",
+    "password": "mochizuki"
+  },
+
+  "facebook": {
+    "appId": "",
+    "secret": "",
+    "callbackURL": "http://localhost:3000/auth/facebook"
+  },
+  "twitter": {
+    "apiKey": "",
+    "secret": "",
+    "callbackURL": "http://localhost:3000/auth/twitter"
+  },
+  "google": {
+    "clientID": "",
+    "clientSecret": "",
+    "callbackURL": "http://localhost:3000/auth/google"
+  },
+  "instagram": {
+    "clientID": "",
+    "clientSecret": "",
+    "callbackURL": "http://localhost:3000/auth/instagram/callback"
+  },
+
+
+  "cron": {
+    "isMainLeader": true,
+    "donationDoneCRON": "5 * * * *",
+    "statCRON": "7 * * * *",
+    "globalStatCRON": "9 * * * *",
+    "bloodDonationEligibleCron": "11 * * * *",
+    "mobileCollectDownloadCron": "13 * * * *",
+    "firstDonationAdviceCron": "14 * * * *",
+    "grpdExportCron": "16 * * * *",
+    "quotaExceededResetCron": "18 * * * *",
+    "newAnd30DaysWithoutDonationCron": "18 15 * * *",
+    "donationReminderCron": "18 30 * * *"
+  },
+  "daysBeforeStatisticsAnalytics": 5,
+  "weeksDelayBeforeEligibilty": 1,
+
+  "mail": {
+    "redirectAllMailTo": "",
+    "activateMail": false,
+    "fromEmail": "katellea-no-reply@katellea.fr",
+    "fromName": "Katellea",
+    "contactEmail": "<set-it>",
+    "apiKey": "<set it>"
+  },
+
+  "sentry": {
+    "dsn": ""
+  }
+}

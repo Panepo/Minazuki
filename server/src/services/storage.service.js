@@ -1,0 +1,69 @@
+import { existsSync, mkdirSync, lstatSync, readdirSync, renameSync } from 'fs'
+import { join } from 'path'
+import rimraf from 'rimraf'
+import { sendError } from '../helpers/generic.helper'
+
+const dataDir = 'data'
+
+// Create the log directory if it does not exist
+if (!existsSync(dataDir)) {
+  mkdirSync(dataDir)
+}
+
+export const rootFolder = join(__dirname, '../../')
+export const dataFolder = join(rootFolder, dataDir)
+
+export function createFolder(name) {
+  const newFolder = join(dataFolder, name)
+  if (!existsSync(newFolder)) {
+    mkdirSync(newFolder)
+    return true
+  } else {
+    return false
+  }
+}
+
+export async function deleteFolder(name) {
+  return new Promise(async (resolve, reject) => {
+    const oldFolder = join(dataFolder, name)
+    if (existsSync(oldFolder)) {
+      rimraf(oldFolder, err => {
+        if (err) {
+          sendError(err)
+          reject(new Error(err))
+        }
+        resolve()
+      })
+    } else {
+      reject(new Error('folder not found'))
+    }
+  })
+}
+
+export async function renameFolder(name, newName) {
+  return new Promise(async (resolve, reject) => {
+    const oldFolder = join(dataFolder, name)
+    const newFolder = join(dataFolder, newName)
+    if (!existsSync(oldFolder)) {
+      reject(new Error('folder not found'))
+    } else if (existsSync(newFolder)) {
+      reject(new Error('target folder already exists'))
+    } else {
+      renameSync(oldFolder, newFolder)
+      resolve()
+    }
+  })
+}
+
+export const isDirectory = source => lstatSync(source).isDirectory()
+export const getFolder = source =>
+  readdirSync(source)
+    .map(name => join(source, name))
+    .filter(isDirectory)
+    .map(name =>
+      name
+        .replace(dataFolder, '')
+        .replace(/\\/g, '')
+        .replace(/\//g, '')
+    )
+

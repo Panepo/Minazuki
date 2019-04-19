@@ -1,4 +1,11 @@
-import { existsSync, mkdirSync, lstatSync, readdirSync, renameSync } from 'fs'
+import {
+  existsSync,
+  mkdirSync,
+  lstatSync,
+  readdirSync,
+  renameSync,
+  unlinkSync
+} from 'fs'
 import { join } from 'path'
 import rimraf from 'rimraf'
 import { sendError } from '../helpers/generic.helper'
@@ -55,7 +62,7 @@ export async function renameFolder(name, newName) {
   })
 }
 
-export const isDirectory = source => lstatSync(source).isDirectory()
+const isDirectory = source => lstatSync(source).isDirectory()
 export const getFolder = source =>
   readdirSync(source)
     .map(name => join(source, name))
@@ -67,3 +74,51 @@ export const getFolder = source =>
         .replace(/\//g, '')
     )
 
+const isFile = source => !lstatSync(source).isDirectory()
+const getFiles = source =>
+  readdirSync(source)
+    .map(name => join(source, name))
+    .filter(isFile)
+export const getFilesInFolder = user => {
+  const userFolder = join(dataFolder, user)
+  if (existsSync(userFolder)) {
+    const result = getFiles(userFolder)
+    return result
+  } else {
+    return null
+  }
+}
+const getDirectories = source =>
+  readdirSync(source)
+    .map(name => join(source, name))
+    .filter(isDirectory)
+    .map(name =>
+      name
+        .replace(dataFolder, '')
+        .replace(/\\/g, '')
+        .replace(/\//g, '')
+    )
+    .map(name => {
+      return {
+        name: name,
+        files: getFilesInFolder(name)
+      }
+    })
+export const getAll = () => getDirectories(dataFolder)
+
+export async function deleteFile(folder, name) {
+  return new Promise(async (resolve, reject) => {
+    const file = join(dataFolder, folder, name)
+    if (existsSync(file)) {
+      try {
+        unlinkSync(file)
+        resolve()
+      } catch (err) {
+        sendError(err)
+        reject(new Error(err))
+      }
+    } else {
+      reject(new Error('folder not found'))
+    }
+  })
+}

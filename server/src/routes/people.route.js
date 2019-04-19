@@ -1,12 +1,17 @@
 import express from 'express'
 import bodyparser from 'body-parser'
-import { dataFolder, getFolder, createFolder, deleteFolder, renameFolder } from '../services/storage.service'
-// import { sendError } from '../helpers/generic.helper'
+import {
+  dataFolder,
+  getFolder,
+  createFolder,
+  deleteFolder,
+  renameFolder
+} from '../services/storage.service'
 
 const peopleRoutes = express.Router()
 peopleRoutes.use(bodyparser.json())
 
-// @route GET data/getPeople
+// @route GET face/getPeople
 // @desc get people list from the server
 // @access Public
 peopleRoutes.get('/getPeople', (req, res) => {
@@ -14,7 +19,7 @@ peopleRoutes.get('/getPeople', (req, res) => {
   res.send(result)
 })
 
-// @route POST data/addPeople
+// @route POST face/addPeople
 // @desc add people list to the server
 // @access Public
 peopleRoutes.post('/addPeople', (req, res) => {
@@ -34,7 +39,7 @@ peopleRoutes.post('/addPeople', (req, res) => {
   }
 })
 
-// @route POST data/deletePeople
+// @route POST face/deletePeople
 // @desc delete people on the server
 // @access Public
 peopleRoutes.post('/deletePeople', async (req, res) => {
@@ -53,7 +58,7 @@ peopleRoutes.post('/deletePeople', async (req, res) => {
   }
 })
 
-// @route POST data/renamePeople
+// @route POST face/renamePeople
 // @desc rename people on the server
 // @access Public
 peopleRoutes.post('/renamePeople', async (req, res) => {

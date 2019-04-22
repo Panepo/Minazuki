@@ -27,7 +27,8 @@ const styles = (theme: Object) => ({
 })
 
 type Props = {
-  auth: StateAuth
+  auth: StateAuth,
+  classes: Object
 }
 
 const Home = (props: Props) => {

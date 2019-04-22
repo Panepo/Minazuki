@@ -1,27 +1,16 @@
 // @flow
 
+import type Action from './modelAction'
+import type { CanvasRect, VideoConstraints } from './modelMisc'
+
 export const actionSetting = {
-  MODIFY_SETTING: 'MODIFY_SETTING',
+  MODIFY_VIDEO: 'MODIFY_VIDEO',
   MODIFY_RECT: 'MODIFY_RECT'
 }
 
-export type PayloadSetting = {
-  column: string,
-  value: number
-}
-
-export type ActionSetting = { type: string, payload: PayloadSetting }
+export type ActionSetting = Action<Object>
 
 export type StateSetting = {
-  x: number,
-  y: number,
-  width: number,
-  height: number
-}
-
-export type StateSettingError = {
-  x: { onoff: boolean, message: string },
-  y: { onoff: boolean, message: string },
-  width: { onoff: boolean, message: string },
-  height: { onoff: boolean, message: string }
+  rect: CanvasRect,
+  video: VideoConstraints
 }

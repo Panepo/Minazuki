@@ -1,5 +1,6 @@
 [ignore]
 .*/build/.*
+.*/archieve/.*
 ./clinet/node_modules/redux-persist/lib/integration/react.js.flow
 
 [include]

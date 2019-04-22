@@ -2,26 +2,25 @@
 import createReducer from './createReducer'
 import type { Action } from '../models/modelAction'
 import { actionSetting } from '../models/modelSetting'
-import type { StateSetting, PayloadSetting } from '../models/modelSetting'
+import type { StateSetting } from '../models/modelSetting'
+import type { CanvasRect, VideoConstraints } from '../models/modelMisc'
 
 const initialState: StateSetting = {
-  x: 10,
-  y: 10,
-  width: 100,
-  height: 100
+  rect: { x: 100, y: 100, width: 100, height: 100 },
+  video: {
+    width: 1280,
+    height: 720
+  }
 }
 
 export const reducerSetting = createReducer(initialState, {
-  [actionSetting.MODIFY_SETTING](
+  [actionSetting.MODIFY_VIDEO](
     state: StateSetting,
-    action: Action<PayloadSetting>
+    action: Action<VideoConstraints>
   ) {
-    return { ...state, [action.payload.column]: action.payload.value }
+    return { ...state, video: action.payload }
   },
-  [actionSetting.MODIFY_RECT](
-    state: StateSetting,
-    action: Action<StateSetting>
-  ) {
-    return action.payload
+  [actionSetting.MODIFY_RECT](state: StateSetting, action: Action<CanvasRect>) {
+    return { ...state, rect: action.payload }
   }
 })

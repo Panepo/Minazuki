@@ -16,13 +16,15 @@ import NotFound from './pages/NotFound'
 import PrivateRoute from './routes/PrivateRoute'
 import AdminRoute from './routes/AdminRoute'
 
-import Home from './pages/Home/Home'
-import Signin from './pages/Signin/Signin'
-import Signup from './pages/Signup/Signup'
-import Sensor from './pages/PrivateSensor/Sensor'
-import Setting from './pages/PrivateSetting/Setting'
-import Register from './pages/AdminRegister/Register'
-import List from './pages/AdminList/List'
+import Home from './pages/PublicHome/Home'
+import Signin from './pages/PublicSignin/Signin'
+import Signup from './pages/PublicSignup/Signup'
+import Sensor from './pages/PublicSignup/Signup'
+import Register from './pages/PublicSignup/Signup'
+// import Sensor from './pages/PrivateSensor/PrivateSensor'
+import Setting from './pages/PrivateSetting/PrivateSetting'
+// import Register from './pages/AdminRegister/AdminRegister'
+import List from './pages/AdminList/AdminList'
 
 const styles = (theme: Object) => ({
   root: {

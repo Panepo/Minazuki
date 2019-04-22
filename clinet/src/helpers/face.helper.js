@@ -1,7 +1,6 @@
 // @flow
 
 import * as faceapi from 'face-api.js'
-import type { FaceData } from '../models/modelRecognize'
 
 export function resizeCanvasAndResults(
   dimensions: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
@@ -104,30 +103,4 @@ export function extractData(
     return ctx.getImageData(rect.x, rect.y, rect.width, rect.height)
   }
   return null
-}
-
-export function findMatch(
-  input: FaceData,
-  data: FaceData[],
-  threshold: number
-): string {
-  if (data.length > 0) {
-    const result: FaceData = data
-      // $flow-disable-line
-      .map((descriptor: number[]) => ({
-        distance: faceapi.euclideanDistance(descriptor, input)
-      }))
-      // $flow-disable-line
-      .reduce((best: FaceData, curr: FaceData) =>
-        best.distance < curr.distance ? best : curr
-      )
-
-    if (result.distance > 0.5) {
-      return result.name
-    } else {
-      return ''
-    }
-  } else {
-    return ''
-  }
 }

@@ -6,14 +6,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import type { Dispatch } from '../../models'
 import * as actionSetting from '../../actions/actionSetting'
+import type { StateSetting } from '../../models/modelSetting'
 import type {
-  StateSetting,
-  StateSettingError,
-  PayloadSetting
-} from '../../models/modelSetting'
+  CanvasRect,
+  CanvasRectError,
+  VideoConstraints,
+  VideoConstraintsError
+} from '../../models/modelMisc'
 import WebcamRectDraw from '../../componments/WebcamRectDraw'
-import { validateCameraSetting } from '../../helpers/validate.helper'
-// import Webcam from 'react-webcam'
+import { validateRect, validateVideo } from '../../helpers/validate.helper'
 import NumberFormat from 'react-number-format'
 import Layout from '../Layout'
 import { Link } from 'react-router-dom'
@@ -75,25 +76,29 @@ type Props = {
 
 type State = {
   isPlaying: boolean,
-  videoConstraints: {
-    width: number,
-    height: number
-  },
-  videoSettingError: StateSettingError
+  rect: CanvasRect,
+  rectError: CanvasRectError,
+  video: VideoConstraints,
+  videoError: VideoConstraintsError
 }
 
 class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
-  state = {
-    isPlaying: false,
-    videoConstraints: {
-      width: 1280,
-      height: 720
-    },
-    videoSettingError: {
-      x: { onoff: false, message: '' },
-      y: { onoff: false, message: '' },
-      width: { onoff: false, message: '' },
-      height: { onoff: false, message: '' }
+  constructor(props: ProvidedProps & Props) {
+    super(props)
+    this.state = {
+      isPlaying: false,
+      rect: this.props.videoSetting.rect,
+      rectError: {
+        x: { onoff: false, message: '' },
+        y: { onoff: false, message: '' },
+        width: { onoff: false, message: '' },
+        height: { onoff: false, message: '' }
+      },
+      video: this.props.videoSetting.video,
+      videoError: {
+        width: { onoff: false, message: '' },
+        height: { onoff: false, message: '' }
+      }
     }
   }
 
@@ -112,25 +117,44 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  handleInputChange = (column: string) => (event: any) => {
+  handleGetPosition = (input: CanvasRect) => {
+    this.setState({ rect: input })
+  }
+
+  handleAccept = () => {
+    this.props.actionsS.modifyRect(this.state.rect)
+    this.props.actionsS.modifyVideo(this.state.video)
+  }
+
+  handleCancel = () => {
+    this.setState({
+      rect: this.props.videoSetting.rect,
+      rectError: {
+        x: { onoff: false, message: '' },
+        y: { onoff: false, message: '' },
+        width: { onoff: false, message: '' },
+        height: { onoff: false, message: '' }
+      },
+      video: this.props.videoSetting.video,
+      videoError: {
+        width: { onoff: false, message: '' },
+        height: { onoff: false, message: '' }
+      }
+    })
+  }
+
+  handleInputRect = (column: string) => (event: any) => {
     if (event.target.value.length > 0) {
       const value = parseInt(event.target.value)
-      const error = validateCameraSetting(column, value)
-      if (error) {
-        this.setState({
-          videoSettingError: {
-            ...this.state.videoSettingError,
-            [error.column]: { onoff: true, message: error.message }
-          }
-        })
+      const input = { ...this.state.rect, [column]: value }
+      const error = validateRect(input)
+
+      if (error.isValid) {
+        this.setState({ rect: input, rectError: error.errors })
       } else {
-        const input: PayloadSetting = {
-          column: column,
-          value: value
-        }
-        this.props.actionsS.modifySetting(input)
         this.setState({
-          videoSettingError: {
+          rect: input,
+          rectError: {
             x: { onoff: false, message: '' },
             y: { onoff: false, message: '' },
             width: { onoff: false, message: '' },
@@ -141,8 +165,24 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  handleGetPosition = (rect: StateSetting) => {
-    this.props.actionsS.modifyRect(rect)
+  handleInputVideo = (column: string) => (event: any) => {
+    if (event.target.value.length > 0) {
+      const value = parseInt(event.target.value)
+      const input = { ...this.state.video, [column]: value }
+      const error = validateVideo(input)
+
+      if (error.isValid) {
+        this.setState({ video: input, videoError: error.errors })
+      } else {
+        this.setState({
+          video: input,
+          videoError: {
+            width: { onoff: false, message: '' },
+            height: { onoff: false, message: '' }
+          }
+        })
+      }
+    }
   }
 
   // ================================================================================
@@ -150,22 +190,6 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   renderButton = () => {
-    const renderToSensor = () => {
-      if (this.props.auth.user.admin) {
-        return (
-          <Link to="/sensor">
-            <Button color="primary">Sensor</Button>
-          </Link>
-        )
-      } else {
-        return (
-          <Link to="/sensor">
-            <Button color="primary">Accept</Button>
-          </Link>
-        )
-      }
-    }
-
     const renderToRegister = () => {
       if (this.props.auth.user.admin) {
         return (
@@ -179,28 +203,34 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     const renderWebcamPower = (onoff: boolean) => {
       if (onoff) {
         return (
-          <div>
-            <Button color="secondary" onClick={this.handleWebcam}>
-              Webcam Stop
-            </Button>
-            {renderToSensor()}
-            {renderToRegister()}
-          </div>
+          <Button color="secondary" onClick={this.handleWebcam}>
+            Webcam Stop
+          </Button>
         )
       } else {
         return (
-          <div>
-            <Button color="primary" onClick={this.handleWebcam}>
-              Webcam Start
-            </Button>
-            {renderToSensor()}
-            {renderToRegister()}
-          </div>
+          <Button color="primary" onClick={this.handleWebcam}>
+            Webcam Start
+          </Button>
         )
       }
     }
 
-    return renderWebcamPower(this.state.isPlaying)
+    return (
+      <div>
+        {renderWebcamPower(this.state.isPlaying)}
+        <Button color="primary" onClick={this.handleAccept}>
+          Accept
+        </Button>
+        <Button color="secondary" onClick={this.handleCancel}>
+          Cancel
+        </Button>
+        <Link to="/sensor">
+          <Button color="primary">Sensor</Button>
+        </Link>
+        {renderToRegister()}
+      </div>
+    )
   }
 
   renderWebCam = () => {
@@ -210,10 +240,10 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
           audio={false}
           videoWidth={640}
           videoHeight={360}
-          videoConstraints={this.state.videoConstraints}
+          videoConstraints={this.props.videoSetting.video}
           rectColor={'lime'}
           getPosition={rect => this.handleGetPosition(rect)}
-          rect={this.props.videoSetting}
+          rect={this.state.rect}
         />
       )
     } else {
@@ -221,20 +251,44 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  renderInput = () => {
-    const listInput = ['x', 'y', 'width', 'height']
+  renderInputRect = () => {
+    const listRect = ['x', 'y', 'width', 'height']
 
-    return listInput.reduce((output: any[], data: string, i: number) => {
+    return listRect.reduce((output: any[], data: string, i: number) => {
       output.push(
         <TextField
           id={data}
           key={data + i.toString()}
-          label={data}
-          error={this.state.videoSettingError[data].onoff}
-          helperText={this.state.videoSettingError[data].message}
+          label={'Rect:' + data}
+          error={this.state.rectError[data].onoff}
+          helperText={this.state.rectError[data].message}
           className={this.props.classes.formControl}
-          value={this.props.videoSetting[data]}
-          onInput={this.handleInputChange(data)}
+          value={this.state.rect[data]}
+          onInput={this.handleInputRect(data)}
+          margin="normal"
+          InputProps={{
+            inputComponent: NumberFormatCustom
+          }}
+        />
+      )
+      return output
+    }, [])
+  }
+
+  renderInputVideo = () => {
+    const listVideo = ['width', 'height']
+
+    return listVideo.reduce((output: any[], data: string, i: number) => {
+      output.push(
+        <TextField
+          id={data}
+          key={data + i.toString()}
+          label={'Video:' + data}
+          error={this.state.videoError[data].onoff}
+          helperText={this.state.videoError[data].message}
+          className={this.props.classes.formControl}
+          value={this.state.video[data]}
+          onInput={this.handleInputVideo(data)}
           margin="normal"
           InputProps={{
             inputComponent: NumberFormatCustom
@@ -267,7 +321,8 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
               </Grid>
               <Divider className={this.props.classes.divider} />
               {this.renderButton()}
-              {this.renderInput()}
+              <div>{this.renderInputRect()}</div>
+              <div>{this.renderInputVideo()}</div>
             </CardContent>
           </Card>
         }
@@ -279,10 +334,16 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
 PrivateSetting.propTypes = {
   classes: PropTypes.object.isRequired,
   videoSetting: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
-    width: PropTypes.number,
-    height: PropTypes.number
+    rect: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      width: PropTypes.number,
+      height: PropTypes.number
+    }),
+    video: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number
+    })
   }),
   auth: PropTypes.object.isRequired
 }

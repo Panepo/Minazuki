@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
@@ -13,6 +13,7 @@ import WarningIcon from '@material-ui/icons/Warning'
 import IconButton from '@material-ui/core/IconButton'
 import green from '@material-ui/core/colors/green'
 import amber from '@material-ui/core/colors/amber'
+import lightBlue from '@material-ui/core/colors/lightBlue'
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -29,7 +30,7 @@ const styles = (theme: Object) => ({
     backgroundColor: theme.palette.error.dark
   },
   info: {
-    backgroundColor: theme.palette.primary.dark
+    backgroundColor: lightBlue[900]
   },
   warning: {
     backgroundColor: amber[700]
@@ -47,7 +48,15 @@ const styles = (theme: Object) => ({
   }
 })
 
-function MySnackbarContent(props: any) {
+type Props = {
+  classes: Object,
+  className: string,
+  message: string,
+  onClose: () => {},
+  variant: 'success' | 'warning' | 'error' | 'info'
+}
+
+const InfoBar = (props: Props) => {
   const { classes, className, message, onClose, variant, ...other } = props
   const Icon = variantIcon[variant]
 
@@ -76,7 +85,7 @@ function MySnackbarContent(props: any) {
   )
 }
 
-MySnackbarContent.propTypes = {
+InfoBar.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   message: PropTypes.node,
@@ -84,4 +93,4 @@ MySnackbarContent.propTypes = {
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired
 }
 
-export default withStyles(styles)(MySnackbarContent)
+export default withStyles(styles)(InfoBar)

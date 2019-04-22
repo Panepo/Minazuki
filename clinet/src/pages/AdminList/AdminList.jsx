@@ -4,9 +4,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import Layout from '../Layout'
-import SnackbarContentWrapper from '../../componments/SnackContent'
 import { withStyles } from '@material-ui/core'
-import Snackbar from '@material-ui/core/Snackbar'
 import Card from '@material-ui/core/Card'
 import Grid from '@material-ui/core/Grid'
 // import CardContent from '@material-ui/core/CardContent'
@@ -107,20 +105,6 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
         gridPhone={12}
         content={
           <div>
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-              open={this.state.snackStatus}
-              autoHideDuration={6000}
-              onClose={this.handleSnackClose}>
-              <SnackbarContentWrapper
-                onClose={this.handleSnackClose}
-                variant={this.state.snackType}
-                message={this.state.snackMessage}
-              />
-            </Snackbar>
             <Grid
               container={true}
               className={this.props.classes.grid}

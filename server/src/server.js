@@ -18,6 +18,8 @@ import authRoutes from './routes/auth.route'
 import peopleRoutes from './routes/people.route'
 import faceRoutes from './routes/face.route'
 
+import { dataFolder } from './services/storage.service'
+
 const app = express()
 
 // Days locale
@@ -39,6 +41,9 @@ app.use('/auth', authRoutes)
 app.use('/data', dataRoutes)
 app.use('/face', peopleRoutes)
 app.use('/face', faceRoutes)
+
+// DATA ROUTE
+app.use('/data', express.static(dataFolder))
 
 // By using (!module.parent) condition, we avoid EADDRINUSE when testing because app will start once
 let startApp = process.env.NODE_ENV != 'test'

@@ -79,6 +79,10 @@ const getFiles = source =>
   readdirSync(source)
     .map(name => join(source, name))
     .filter(isFile)
+    .map(name => {
+      const photo = name.replace(rootFolder, '').replace(/\\/g, '/')
+      return !photo.startsWith('/') ? '/' + photo : photo
+    })
 export const getFilesInFolder = user => {
   const userFolder = join(dataFolder, user)
   if (existsSync(userFolder)) {

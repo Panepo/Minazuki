@@ -14,13 +14,16 @@ const initialState: StateSetting = {
 }
 
 export const reducerSetting = createReducer(initialState, {
-  [actionSetting.MODIFY_VIDEO](
+  [actionSetting.SETTING_VIDEO](
     state: StateSetting,
     action: Action<VideoConstraints>
   ) {
     return { ...state, video: action.payload }
   },
-  [actionSetting.MODIFY_RECT](state: StateSetting, action: Action<CanvasRect>) {
+  [actionSetting.SETTING_RECT](
+    state: StateSetting,
+    action: Action<CanvasRect>
+  ) {
     return { ...state, rect: action.payload }
   }
 })

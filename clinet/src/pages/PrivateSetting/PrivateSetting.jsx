@@ -126,7 +126,11 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
   handleAccept = () => {
     this.props.actionsS.modifyRect(this.state.rect)
     this.props.actionsS.modifyVideo(this.state.video)
-    this.props.actionsI.infoSet({ onoff: true, variant: 'info', message: 'Config set' })
+    this.props.actionsI.infoSet({
+      onoff: true,
+      variant: 'info',
+      message: 'Config set'
+    })
   }
 
   handleCancel = () => {
@@ -154,7 +158,11 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
 
       if (error.isValid) {
         this.setState({ rect: input, rectError: error.errors })
-        this.props.actionsI.infoSet({ onoff: true, variant: 'error', message: 'Invalid inputs' })
+        this.props.actionsI.infoSet({
+          onoff: true,
+          variant: 'error',
+          message: 'Invalid inputs'
+        })
       } else {
         this.setState({
           rect: input,
@@ -177,7 +185,11 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
 
       if (error.isValid) {
         this.setState({ video: input, videoError: error.errors })
-        this.props.actionsI.infoSet({ onoff: true, variant: 'error', message: 'Invalid inputs' })
+        this.props.actionsI.infoSet({
+          onoff: true,
+          variant: 'error',
+          message: 'Invalid inputs'
+        })
       } else {
         this.setState({
           video: input,

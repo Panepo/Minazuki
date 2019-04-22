@@ -4,8 +4,8 @@ import type Action from './modelAction'
 import type { CanvasRect, VideoConstraints } from './modelMisc'
 
 export const actionSetting = {
-  MODIFY_VIDEO: 'MODIFY_VIDEO',
-  MODIFY_RECT: 'MODIFY_RECT'
+  SETTING_VIDEO: 'SETTING_VIDEO',
+  SETTING_RECT: 'SETTING_RECT'
 }
 
 export type ActionSetting = Action<Object>

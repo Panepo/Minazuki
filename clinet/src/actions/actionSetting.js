@@ -6,14 +6,14 @@ import type { CanvasRect, VideoConstraints } from '../models/modelMisc'
 
 export function modifyVideo(input: VideoConstraints): Action<VideoConstraints> {
   return {
-    type: actionSetting.MODIFY_VIDEO,
+    type: actionSetting.SETTING_VIDEO,
     payload: input
   }
 }
 
 export function modifyRect(input: CanvasRect): Action<CanvasRect> {
   return {
-    type: actionSetting.MODIFY_RECT,
+    type: actionSetting.SETTING_RECT,
     payload: input
   }
 }

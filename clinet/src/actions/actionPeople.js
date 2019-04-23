@@ -4,13 +4,6 @@ import type { Dispatch } from '../models/'
 import axios from 'axios'
 import { infoSet } from './actionInfo'
 
-export const peopleGet = (user: string) => (dispatch: Dispatch) => {
-  axios
-    .get('face/getPeople')
-    .then(res => dispatch({ type: actionPeople.PEOPLE_GET, payload: res.data }))
-    .catch(err => dispatch(setError(err)))
-}
-
 export const peopleGetAll = () => (dispatch: Dispatch) => {
   axios
     .get('face/getAll')

@@ -1,12 +1,24 @@
-// import { Action } from '../models/modelAction'
-import { actionPeople } from '../models/modelPeople'
+import { Action } from '../models/modelAction'
+import { actionFace } from '../models/modelFace'
 import type { Dispatch } from '../models/'
 import axios from 'axios'
-import { setError } from './actionPeople'
+import { infoSet } from './actionInfo'
 
-export const faceGet = (user: string) => (dispatch: Dispatch) => {
+export const faceGetAll = (user: string) => (dispatch: Dispatch) => {
   axios
-    .get('face/getFace', user)
-    .then(res => dispatch({ type: actionPeople.FACE_GET, payload: res.body }))
-    .catch(err => setError(err))
+    .get('face/getFace', { params:{user: user} })
+    .then(res => dispatch({ type: actionFace.FACE_GETALL, payload: res.data }))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const setError = (err: Object): Action<Object> => (
+  dispatch: Dispatch
+) => {
+  dispatch(
+    infoSet({ onoff: true, variant: 'error', message: 'An error occured' })
+  )
+  return {
+    type: actionFace.FACE_GETERROR,
+    payload: err.response.data
+  }
 }

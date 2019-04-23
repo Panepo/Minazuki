@@ -5,7 +5,8 @@ import {
   getFolder,
   createFolder,
   deleteFolder,
-  renameFolder
+  renameFolder,
+  getAll
 } from '../services/storage.service'
 
 const peopleRoutes = express.Router()
@@ -16,6 +17,14 @@ peopleRoutes.use(bodyparser.json())
 // @access Public
 peopleRoutes.get('/getPeople', (req, res) => {
   const result = getFolder(dataFolder)
+  res.send(result)
+})
+
+// @route GET face/getAll
+// @desc get all face images of all users on server
+// @access Public
+peopleRoutes.get('/getAll', (req, res) => {
+  const result = getAll()
   res.send(result)
 })
 

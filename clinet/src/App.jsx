@@ -25,6 +25,7 @@ import Register from './pages/PublicSignup/Signup'
 import Setting from './pages/PrivateSetting/PrivateSetting'
 // import Register from './pages/AdminRegister/AdminRegister'
 import List from './pages/AdminList/AdminList'
+import Face from './pages/AdminFace/AdminFace'
 
 const styles = (theme: Object) => ({
   root: {
@@ -50,6 +51,7 @@ const routes = () => {
       <PrivateRoute exact={true} path="/setting" component={Setting} />
       <AdminRoute exact={true} path="/register" component={Register} />
       <AdminRoute exact={true} path="/list" component={List} />
+      <AdminRoute exact={true} path="/list/:user" component={Face} />
       <Route component={NotFound} />
     </Switch>
   )

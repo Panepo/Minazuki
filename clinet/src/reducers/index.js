@@ -5,6 +5,7 @@ import * as reducerAuth from './reducerAuth'
 import * as reducerSetting from './reducerSetting'
 import * as reducerInfo from './reducerInfo'
 import * as reducerPeople from './reducerPeople'
+import * as reducerFace from './reducerFace'
 
 const rootReducer = (history: History) =>
   combineReducers({
@@ -12,7 +13,8 @@ const rootReducer = (history: History) =>
     ...reducerAuth,
     ...reducerSetting,
     ...reducerInfo,
-    ...reducerPeople
+    ...reducerPeople,
+    ...reducerFace
   })
 
 export default rootReducer

@@ -40,7 +40,7 @@ app.use(bodyParser.json())
 app.use('/auth', authRoutes)
 app.use('/data', dataRoutes)
 app.use('/face', peopleRoutes)
-app.use('/face', faceRoutes)
+app.use('/list/face', faceRoutes)
 
 // DATA ROUTE
 app.use('/data', express.static(dataFolder))

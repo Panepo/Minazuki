@@ -3,8 +3,7 @@ import bodyparser from 'body-parser'
 import multer from 'multer'
 import {
   deleteFile,
-  getFilesInFolder,
-  getAll
+  getFilesInFolder
 } from '../services/storage.service'
 import { storage, uploadFile, uploadBase64 } from '../services/upload.service'
 
@@ -25,7 +24,7 @@ faceRoutes.post('/addFace', async (req, res) => {
     })
 })
 
-// @route POST face/addFace
+// @route POST face/addFace64
 // @desc add face images of base 64 of user to server
 // @access Public
 faceRoutes.post('/addFace64', async (req, res) => {
@@ -57,8 +56,8 @@ faceRoutes.post('/deleteFace', async (req, res) => {
 // @desc get all face images of user on server
 // @access Public
 faceRoutes.get('/getFace', (req, res) => {
-  if (req.body.user) {
-    const result = getFilesInFolder(req.body.user)
+  if (req.query.user) {
+    const result = getFilesInFolder(req.query.user)
     if (result) {
       res.send(result)
     } else {
@@ -71,14 +70,6 @@ faceRoutes.get('/getFace', (req, res) => {
       error: 'User name is required'
     })
   }
-})
-
-// @route GET face/getAll
-// @desc get all face images of all users on server
-// @access Public
-faceRoutes.get('/getAll', (req, res) => {
-  const result = getAll()
-  res.send(result)
 })
 
 export default faceRoutes

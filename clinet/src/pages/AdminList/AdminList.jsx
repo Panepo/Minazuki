@@ -4,10 +4,11 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import type { Dispatch } from '../../models'
+import type { Dispatch, RouterHistory } from '../../models'
 import * as actionPeople from '../../actions/actionPeople'
 import * as actionInfo from '../../actions/actionInfo'
 import type { StatePeople, PeopleData } from '../../models/modelPeople'
+import { withRouter } from 'react-router-dom'
 import Layout from '../Layout'
 import { withStyles } from '@material-ui/core'
 import Card from '@material-ui/core/Card'
@@ -25,6 +26,7 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
 const imageList = require('../../images/list.jpg')
+const imageList2 = require('../../images/list2.jpg')
 
 const styles = (theme: Object) => ({
   paper: {
@@ -46,7 +48,8 @@ const styles = (theme: Object) => ({
 })
 
 type ProvidedProps = {
-  classes: Object
+  classes: Object,
+  history: RouterHistory
 }
 
 type Props = {
@@ -163,6 +166,10 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
     })
   }
 
+  handleEdit = (name: string) => () => {
+    this.props.history.push('/list/' + name)
+  }
+
   // ================================================================================
   // React render functions
   // ================================================================================
@@ -183,6 +190,12 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
               </Typography>
             </CardContent>
             <CardActions>
+              <Button
+                size="small"
+                color="primary"
+                onClick={this.handleEdit(data.name)}>
+                Edit
+              </Button>
               <Button
                 size="small"
                 color="primary"
@@ -207,7 +220,7 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
     return (
       <Grid item={true} xs={2} key={'addfaceCard'}>
         <Card className={this.props.classes.card}>
-          <img src={imageList} alt={'add face'} height={140} />
+          <img src={imageList2} alt={'add face'} height={140} />
           <CardContent>
             <TextField
               label={'Enter name'}
@@ -364,4 +377,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(AdminList))
+)(withStyles(styles)(withRouter(AdminList)))

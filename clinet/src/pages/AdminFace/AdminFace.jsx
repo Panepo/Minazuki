@@ -26,12 +26,12 @@ const styles = (theme: Object) => ({
     paddingBottom: '40px',
     paddingLeft: '40px',
     paddingRight: '40px'
-  },
+  }
 })
 
 type ProvidedProps = {
   classes: Object,
-  match: any,
+  match: any
 }
 
 type Props = {
@@ -77,13 +77,11 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
           <Card className={this.props.classes.card}>
             <img
               className={this.props.classes.media}
-              src={"../" + data}
-              alt={"FQ"}
+              src={'../' + data}
+              alt={'FQ'}
             />
             <CardActions>
-              <Button
-                size="small"
-                color="primary">
+              <Button size="small" color="primary">
                 Delete
               </Button>
             </CardActions>
@@ -150,4 +148,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withStyles(styles)(withRouter(AdminFace)))
-

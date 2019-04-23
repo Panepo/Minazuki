@@ -6,7 +6,7 @@ import { infoSet } from './actionInfo'
 
 export const faceGetAll = (user: string) => (dispatch: Dispatch) => {
   axios
-    .get('face/getFace', { params:{user: user} })
+    .get('face/getFace', { params: { user: user } })
     .then(res => dispatch({ type: actionFace.FACE_GETALL, payload: res.data }))
     .catch(err => dispatch(setError(err)))
 }

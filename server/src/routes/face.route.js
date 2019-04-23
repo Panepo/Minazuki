@@ -1,10 +1,7 @@
 import express from 'express'
 import bodyparser from 'body-parser'
 import multer from 'multer'
-import {
-  deleteFile,
-  getFilesInFolder
-} from '../services/storage.service'
+import { deleteFile, getFilesInFolder } from '../services/storage.service'
 import { storage, uploadFile, uploadBase64 } from '../services/upload.service'
 
 const faceRoutes = express.Router()

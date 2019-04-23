@@ -2,12 +2,13 @@ import { Action } from '../models/modelAction'
 import { actionPeople } from '../models/modelPeople'
 import type { Dispatch } from '../models/'
 import axios from 'axios'
+import { infoSet } from './actionInfo'
 
 export const peopleGet = (user: string) => (dispatch: Dispatch) => {
   axios
     .get('face/getPeople')
-    .then(res => dispatch({ type: actionPeople.PEOPLE_GET, payload: res.body }))
-    .catch(err => setError(err))
+    .then(res => dispatch({ type: actionPeople.PEOPLE_GET, payload: res.data }))
+    .catch(err => dispatch(setError(err)))
 }
 
 export const peopleGetAll = () => (dispatch: Dispatch) => {
@@ -16,17 +17,40 @@ export const peopleGetAll = () => (dispatch: Dispatch) => {
     .then(res => {
       dispatch({ type: actionPeople.PEOPLE_GETALL, payload: res.data })
     })
-    .catch(err => setError(err))
+    .catch(err => dispatch(setError(err)))
 }
 
-export const faceGet = (user: string) => (dispatch: Dispatch) => {
+export const peopleAdd = (input: { name: string }) => (dispatch: Dispatch) => {
   axios
-    .get('face/getFace', user)
-    .then(res => dispatch({ type: actionPeople.FACE_GET, payload: res.body }))
-    .catch(err => setError(err))
+    .post('face/addPeople', input)
+    .then(res => dispatch(peopleGetAll()))
+    .catch(err => dispatch(setError(err)))
 }
 
-export const setError = (err: Object): Action<Object> => {
+export const peopleRename = (input: { name: string, newName: string }) => (
+  dispatch: Dispatch
+) => {
+  axios
+    .post('face/renamePeople', input)
+    .then(res => dispatch(peopleGetAll()))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const peopleDelete = (input: { name: string }) => (
+  dispatch: Dispatch
+) => {
+  axios
+    .post('face/deletePeople', input)
+    .then(res => dispatch(peopleGetAll()))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const setError = (err: Object): Action<Object> => (
+  dispatch: Dispatch
+) => {
+  dispatch(
+    infoSet({ onoff: true, variant: 'error', message: err.response.data })
+  )
   return {
     type: actionPeople.PEOPLE_GETERROR,
     payload: err.response.data

@@ -21,5 +21,5 @@ export type PeopleData = {
 
 export type StatePeople = {
   peoples: PeopleData[],
-  errors: string
+  errors: Object
 }

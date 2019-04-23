@@ -6,7 +6,7 @@ import type { StatePeople, PeopleData } from '../models/modelPeople'
 
 const initialState: StatePeople = {
   peoples: [],
-  errors: ''
+  errors: {}
 }
 
 export const reducerPeople = createReducer(initialState, {
@@ -15,5 +15,8 @@ export const reducerPeople = createReducer(initialState, {
     action: Action<PeopleData[]>
   ) {
     return { ...state, peoples: action.payload }
+  },
+  [actionPeople.PEOPLE_GETERROR](state: StatePeople, action: Action<Object>) {
+    return { ...state, errors: action.payload }
   }
 })

@@ -8,6 +8,7 @@ import type { DataAuth } from '../models/modelAuth'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import setAuthToken from '../helpers/token.helper'
+import { infoSet } from './actionInfo'
 
 // Register User
 export const registerUser = (userData: DataAuth, history: History) => (
@@ -57,6 +58,7 @@ export const setCurrentUser = (decoded: Object): Action<Object> => {
 }
 
 export const setError = (err: Object): Action<Object> => {
+  infoSet({ onoff: true, variant: 'error', message: err.response.data })
   return {
     type: actionAuth.GET_ERRORS,
     payload: err.response.data

@@ -8,16 +8,23 @@ import type { Dispatch } from '../../models'
 import * as actionFace from '../../actions/actionFace'
 import * as actionInfo from '../../actions/actionInfo'
 import type { StateFace } from '../../models/modelFace'
+import { basename } from 'path'
 import Layout from '../Layout'
 import { withRouter } from 'react-router-dom'
+import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import Grid from '@material-ui/core/Grid'
-import CardActions from '@material-ui/core/CardActions'
-import Button from '@material-ui/core/Button'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import IconButton from '@material-ui/core/IconButton'
+import IconDelete from '@material-ui/icons/Delete'
+import IconCamera from '@material-ui/icons/Camera'
+import IconUpload from '@material-ui/icons/CloudUpload'
+import Tooltip from '@material-ui/core/Tooltip'
 
-import { withStyles } from '@material-ui/core/styles'
+const imageFace = require('../../images/face.jpg')
 
 const styles = (theme: Object) => ({
   paper: {
@@ -26,12 +33,24 @@ const styles = (theme: Object) => ({
     paddingBottom: '40px',
     paddingLeft: '40px',
     paddingRight: '40px'
+  },
+  gridList: {
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)'
+  },
+  titleBar: {
+    background:
+      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+  },
+  icon: {
+    color: 'white'
   }
 })
 
 type ProvidedProps = {
   classes: Object,
-  match: any
+  match: any,
+  width: string
 }
 
 type Props = {
@@ -70,28 +89,6 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
   // React render functions
   // ================================================================================
 
-  renderFaceList() {
-    return this.state.faces.reduce((output, data, i) => {
-      output.push(
-        <Grid item={true} xs={2} key={'faceCard' + i.toString()}>
-          <Card className={this.props.classes.card}>
-            <img
-              className={this.props.classes.media}
-              src={'../' + data}
-              alt={'FQ'}
-            />
-            <CardActions>
-              <Button size="small" color="primary">
-                Delete
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      )
-      return output
-    }, [])
-  }
-
   render() {
     if (this.state.isLoading) {
       return (
@@ -109,17 +106,62 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
 
     return (
       <Layout
-        title={'Face List | Minazuki'}
+        title={this.props.match.params.user + ' | Minazuki'}
         gridNormal={10}
         gridPhone={12}
         content={
           <div>
-            <Grid
-              container={true}
-              className={this.props.classes.grid}
-              spacing={16}>
-              {this.renderFaceList()}
-            </Grid>
+            <GridList
+              cellHeight={256}
+              cols={6}
+              spacing={1}
+              className={this.props.classes.gridList}>
+              {this.state.faces.map(file => (
+                <GridListTile key={file} cols={1} rows={1}>
+                  <img
+                    src={file}
+                    alt={this.props.match.params.user}
+                    height={256}
+                  />
+                  <GridListTileBar
+                    title={basename(file)}
+                    titlePosition="bottom"
+                    actionIcon={
+                      <Tooltip title="Delete file">
+                        <IconButton className={this.props.classes.icon}>
+                          <IconDelete />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                    actionPosition="right"
+                    className={this.props.classes.titleBar}
+                  />
+                </GridListTile>
+              ))}
+              <GridListTile cols={1} rows={1}>
+                <img src={imageFace} alt={'new face'} height={256} />
+                <GridListTileBar
+                  title={'Add face'}
+                  titlePosition="bottom"
+                  actionIcon={
+                    <div>
+                      <Tooltip title="Start camera">
+                        <IconButton className={this.props.classes.icon}>
+                          <IconCamera />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Upload from file">
+                        <IconButton className={this.props.classes.icon}>
+                          <IconUpload />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  }
+                  actionPosition="right"
+                  className={this.props.classes.titleBar}
+                />
+              </GridListTile>
+            </GridList>
           </div>
         }
       />

@@ -39,10 +39,10 @@ export async function uploadFile(upload, req, res) {
             const buffer = readFileSync(oldPath)
 
             await sharp(buffer)
-              .resize(320, 247)
+              .resize(256, 256)
               .toFile(newPath)
               .then(() => {
-                result.push(`/data/users/${req.body.user}/${file.filename}`)
+                result.push(`/data/${req.body.user}/${file.filename}`)
                 try {
                   unlinkSync(oldPath)
                 } catch (ex) {

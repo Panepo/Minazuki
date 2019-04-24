@@ -6,8 +6,35 @@ import { infoSet } from './actionInfo'
 
 export const faceGetAll = (user: string) => (dispatch: Dispatch) => {
   axios
-    .get('face/getFace', { params: { user: user } })
+    .get('../face/getFace', { params: { user: user } })
     .then(res => dispatch({ type: actionFace.FACE_GETALL, payload: res.data }))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const faceDelete = (input: { user: string, filename: string }) => (
+  dispatch: Dispatch
+) => {
+  axios
+    .post('../face/deleteFace', input)
+    .then(res => dispatch(faceGetAll(input.user)))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const faceAdd = (input: any) => (dispatch: Dispatch) => {
+  axios({
+    method: 'post',
+    url: '../face/addFace',
+    data: input,
+    config: { headers: { 'Content-Type': 'multipart/form-data' } }
+  })
+    .then(res => dispatch(faceGetAll(input.user)))
+    .catch(err => dispatch(setError(err)))
+}
+
+export const faceAdd64 = (input: any) => (dispatch: Dispatch) => {
+  axios
+    .post('../face/addFace64', input)
+    .then(res => dispatch(faceGetAll(input.user)))
     .catch(err => dispatch(setError(err)))
 }
 

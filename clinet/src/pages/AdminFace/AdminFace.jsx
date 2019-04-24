@@ -23,6 +23,12 @@ import IconDelete from '@material-ui/icons/Delete'
 import IconCamera from '@material-ui/icons/Camera'
 import IconUpload from '@material-ui/icons/CloudUpload'
 import Tooltip from '@material-ui/core/Tooltip'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Button from '@material-ui/core/Button'
+import ImageGallery from '../../componments/ImageGallery'
 
 const imageFace = require('../../images/face.jpg')
 
@@ -44,6 +50,9 @@ const styles = (theme: Object) => ({
   },
   icon: {
     color: 'white'
+  },
+  hidden: {
+    display: 'none'
   }
 })
 
@@ -61,13 +70,30 @@ type Props = {
 
 type State = {
   isLoading: boolean,
-  faces: string[]
+  faces: string[],
+  dialog: {
+    delete: boolean,
+    upload: boolean,
+    camera: boolean
+  },
+  dialogKey: string,
+  isUploaded: boolean,
+  imageFile: string[],
+  imageForm: any | null
 }
 
 class AdminFace extends React.Component<ProvidedProps & Props, State> {
   state = {
     isLoading: true,
-    faces: []
+    faces: [],
+    dialog: {
+      delete: false,
+      upload: false,
+      camera: false
+    },
+    dialogKey: '',
+    isUploaded: false,
+    imageFile: []
   }
 
   componentDidMount = async () => {
@@ -85,11 +111,214 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
   // React event handler functions
   // ================================================================================
 
+  handleAccept = (target: string) => (
+    event: SyntheticEvent<HTMLInputElement>
+  ) => {
+    event.preventDefault()
+    switch (target) {
+      case 'delete':
+        this.props.actionsF.faceDelete({
+          user: this.props.match.params.user,
+          name: basename(this.state.dialogKey)
+        })
+        this.setState({
+          dialog: { ...this.state.dialog, [target]: false }
+        })
+        break
+      case 'upload':
+        const formData = new FormData()
+        const fieldName = this.props.match.params.user
+        const fileList = this.state.imageFile
+
+        formData.append('user', fieldName)
+        Array.from(Array(fileList.length).keys()).map(x =>
+          formData.append(fieldName, fileList[x], basename(fileList[x]))
+        )
+
+        this.props.actionsF.faceAdd(formData)
+        this.setState({
+          dialog: { ...this.state.dialog, [target]: false }
+        })
+        break
+      default:
+        break
+    }
+  }
+
+  handleUpload = (event: any) => {
+    const data = []
+
+    for (let i = 0; i < event.target.files.length; i += 1) {
+      let dataTemp
+      if (event.target.files[i] != null) {
+        dataTemp = URL.createObjectURL(event.target.files[i])
+        data.push(dataTemp)
+      }
+    }
+
+    if (data.length > 0) {
+      this.setState({
+        imageFile: data,
+        isUploaded: true
+      })
+    } else {
+      this.setState({
+        imageFile: [],
+        isUploaded: false
+      })
+    }
+  }
+
+  toggleDialog = (target: string, onoff: boolean, name: string) => () => {
+    this.setState({
+      dialog: { ...this.state.dialog, [target]: onoff },
+      dialogKey: name,
+      imageFile: []
+    })
+  }
+
   // ================================================================================
   // React render functions
   // ================================================================================
 
   render() {
+    const renderList = this.state.faces.map(file => (
+      <GridListTile key={file} cols={1} rows={1}>
+        <img src={file} alt={this.props.match.params.user} height={256} />
+        <GridListTileBar
+          title={basename(file)}
+          titlePosition="bottom"
+          actionIcon={
+            <Tooltip title="Delete file">
+              <IconButton
+                className={this.props.classes.icon}
+                onClick={this.toggleDialog('delete', true, file)}>
+                <IconDelete />
+              </IconButton>
+            </Tooltip>
+          }
+          actionPosition="right"
+          className={this.props.classes.titleBar}
+        />
+      </GridListTile>
+    ))
+
+    const renderAdd = (
+      <GridListTile cols={1} rows={1}>
+        <img src={imageFace} alt={'new face'} height={256} />
+        <GridListTileBar
+          title={'Add face'}
+          titlePosition="bottom"
+          actionIcon={
+            <div>
+              <Tooltip title="Start camera">
+                <IconButton
+                  className={this.props.classes.icon}
+                  onClick={this.toggleDialog('camera', true, '')}>
+                  <IconCamera />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Upload from file">
+                <IconButton
+                  className={this.props.classes.icon}
+                  onClick={this.toggleDialog('upload', true, '')}>
+                  <IconUpload />
+                </IconButton>
+              </Tooltip>
+            </div>
+          }
+          actionPosition="right"
+          className={this.props.classes.titleBar}
+        />
+      </GridListTile>
+    )
+
+    const renderDialogDelete = (
+      <Dialog
+        open={this.state.dialog.delete}
+        onClose={this.toggleDialog('delete', false, '')}
+        aria-labelledby="select-dialog-title"
+        aria-describedby="select-dialog-description"
+        maxWidth={'xl'}>
+        <DialogTitle id="select-dialog-title">Delete</DialogTitle>
+        <DialogContent>
+          <img src={this.state.dialogKey} alt={'delete'} height={256} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleAccept('delete')} color="primary">
+            Accept
+          </Button>
+          <Button
+            onClick={this.toggleDialog('delete', false, '')}
+            color="secondary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+
+    const renderDialogUpload = (
+      <Dialog
+        open={this.state.dialog.upload}
+        onClose={this.toggleDialog('upload', false, '')}
+        aria-labelledby="select-dialog-title"
+        aria-describedby="select-dialog-description"
+        maxWidth={'md'}>
+        <DialogTitle id="select-dialog-title">Upload</DialogTitle>
+        <DialogContent>
+          <ImageGallery
+            imageSrc={this.state.imageFile}
+            imageWidth={256}
+            imageHeight={256}
+            imageText={'upload files'}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" component="label">
+            Select Image
+            <input
+              className={this.props.classes.hidden}
+              type="file"
+              accept="image/*"
+              onChange={this.handleUpload}
+              required
+              multiple
+            />
+          </Button>
+          <Button onClick={this.handleAccept('upload')} color="primary">
+            Accept
+          </Button>
+          <Button
+            onClick={this.toggleDialog('upload', false, '')}
+            color="secondary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+
+    const renderDialogCamera = (
+      <Dialog
+        open={this.state.dialog.camera}
+        onClose={this.toggleDialog('camera', false, '')}
+        aria-labelledby="select-dialog-title"
+        aria-describedby="select-dialog-description"
+        maxWidth={'xl'}>
+        <DialogTitle id="select-dialog-title">Camera</DialogTitle>
+        <DialogContent>FQ</DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleAccept('camera')} color="primary">
+            Accept
+          </Button>
+          <Button
+            onClick={this.toggleDialog('camera', false, '')}
+            color="secondary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+
     if (this.state.isLoading) {
       return (
         <Layout
@@ -111,56 +340,16 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
         gridPhone={12}
         content={
           <div>
+            {renderDialogDelete}
+            {renderDialogUpload}
+            {renderDialogCamera}
             <GridList
               cellHeight={256}
               cols={6}
               spacing={1}
               className={this.props.classes.gridList}>
-              {this.state.faces.map(file => (
-                <GridListTile key={file} cols={1} rows={1}>
-                  <img
-                    src={file}
-                    alt={this.props.match.params.user}
-                    height={256}
-                  />
-                  <GridListTileBar
-                    title={basename(file)}
-                    titlePosition="bottom"
-                    actionIcon={
-                      <Tooltip title="Delete file">
-                        <IconButton className={this.props.classes.icon}>
-                          <IconDelete />
-                        </IconButton>
-                      </Tooltip>
-                    }
-                    actionPosition="right"
-                    className={this.props.classes.titleBar}
-                  />
-                </GridListTile>
-              ))}
-              <GridListTile cols={1} rows={1}>
-                <img src={imageFace} alt={'new face'} height={256} />
-                <GridListTileBar
-                  title={'Add face'}
-                  titlePosition="bottom"
-                  actionIcon={
-                    <div>
-                      <Tooltip title="Start camera">
-                        <IconButton className={this.props.classes.icon}>
-                          <IconCamera />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Upload from file">
-                        <IconButton className={this.props.classes.icon}>
-                          <IconUpload />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  }
-                  actionPosition="right"
-                  className={this.props.classes.titleBar}
-                />
-              </GridListTile>
+              {renderList}
+              {renderAdd}
             </GridList>
           </div>
         }

@@ -131,7 +131,9 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
     this.setState({ inputValue: { ...this.state.inputValue, [target]: '' } })
   }
 
-  handleAccept = (target: string) => (event: SyntheticEvent<HTMLInputElement>) => {
+  handleAccept = (target: string) => (
+    event: SyntheticEvent<HTMLInputElement>
+  ) => {
     event.preventDefault()
     switch (target) {
       case 'new':
@@ -217,6 +219,11 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
             <img src={this.state.dialogImg} alt={'rename'} width={300} />
           </div>
           <div>
+            <Typography gutterBottom variant="h5" component="h2">
+              {this.state.dialogKey.rename}
+            </Typography>
+          </div>
+          <div>
             <TextField
               autoFocus
               label="Enter Name"
@@ -249,7 +256,12 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
         maxWidth={'xl'}>
         <DialogTitle id="select-dialog-title">Delete</DialogTitle>
         <DialogContent>
-          <img src={this.state.dialogImg} alt={'delete'} width={300} />
+          <div>
+            <img src={this.state.dialogImg} alt={'delete'} width={300} />
+          </div>
+          <Typography gutterBottom variant="h5" component="h2">
+            {this.state.dialogKey.delete}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleAccept('delete')} color="primary">
@@ -329,7 +341,9 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
               </IconButton>
             </Tooltip>
             <Tooltip title="Cancel">
-              <IconButton color="primary" onClick={this.handleInputCancel('new')}>
+              <IconButton
+                color="primary"
+                onClick={this.handleInputCancel('new')}>
                 <IconCancel />
               </IconButton>
             </Tooltip>

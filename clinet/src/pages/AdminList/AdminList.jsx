@@ -12,28 +12,14 @@ import { withRouter } from 'react-router-dom'
 import Layout from '../Layout'
 import { withStyles } from '@material-ui/core'
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Tooltip from '@material-ui/core/Tooltip'
-import IconButton from '@material-ui/core/IconButton'
-import IconContent from '@material-ui/icons/Person'
-import IconDelete from '@material-ui/icons/Delete'
-import IconRename from '@material-ui/icons/Description'
-import IconAdd from '@material-ui/icons/PersonAdd'
-import IconCancel from '@material-ui/icons/Cancel'
-import Grid from '@material-ui/core/Grid'
+
+import DialogRename from './DialogRename'
+import DialogDelete from './DialogDelete'
+import RenderList from './RenderList'
 
 const imageList = require('../../images/list.jpg')
-const imageList2 = require('../../images/list2.jpg')
 
 const styles = (theme: Object) => ({
   paper: {
@@ -42,13 +28,6 @@ const styles = (theme: Object) => ({
     paddingBottom: '40px',
     paddingLeft: '40px',
     paddingRight: '40px'
-  },
-  media: {
-    height: 140
-  },
-  gridList: {
-    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: 'translateZ(0)'
   }
 })
 
@@ -206,152 +185,6 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   render() {
-    const renderDialogRename = (
-      <Dialog
-        open={this.state.dialog.rename}
-        onClose={this.toggleDialog('rename', false, '')}
-        aria-labelledby="select-dialog-title"
-        aria-describedby="select-dialog-description"
-        maxWidth={'xl'}>
-        <DialogTitle id="select-dialog-title">Rename</DialogTitle>
-        <DialogContent>
-          <div>
-            <img src={this.state.dialogImg} alt={'rename'} width={300} />
-          </div>
-          <div>
-            <Typography gutterBottom variant="h5" component="h2">
-              {this.state.dialogKey.rename}
-            </Typography>
-          </div>
-          <div>
-            <TextField
-              autoFocus
-              label="Enter Name"
-              value={this.state.inputValue.rename}
-              margin="dense"
-              fullWidth
-              onInput={this.handleInput('rename')}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleAccept('rename')} color="primary">
-            Accept
-          </Button>
-          <Button
-            onClick={this.toggleDialog('rename', false, '')}
-            color="secondary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-
-    const renderDialogDelete = (
-      <Dialog
-        open={this.state.dialog.delete}
-        onClose={this.toggleDialog('delete', false, '')}
-        aria-labelledby="select-dialog-title"
-        aria-describedby="select-dialog-description"
-        maxWidth={'xl'}>
-        <DialogTitle id="select-dialog-title">Delete</DialogTitle>
-        <DialogContent>
-          <div>
-            <img src={this.state.dialogImg} alt={'delete'} width={300} />
-          </div>
-          <Typography gutterBottom variant="h5" component="h2">
-            {this.state.dialogKey.delete}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleAccept('delete')} color="primary">
-            Accept
-          </Button>
-          <Button
-            onClick={this.toggleDialog('delete', false, '')}
-            color="secondary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-
-    const renderList = this.state.peoples.map(data => (
-      <Grid item={true} xs={2} key={data.name}>
-        <Card className={this.props.classes.card}>
-          <CardMedia
-            className={this.props.classes.media}
-            image={data.files[0] ? data.files[0] : imageList}
-            title={data.name}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {data.name}
-            </Typography>
-            <Typography component="p">
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Tooltip title="Content">
-              <IconButton color="primary" onClick={this.handleEdit(data.name)}>
-                <IconContent />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Rename">
-              <IconButton
-                color="primary"
-                onClick={this.toggleDialog('rename', true, data.name)}>
-                <IconRename />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton
-                color="primary"
-                onClick={this.toggleDialog('delete', true, data.name)}>
-                <IconDelete />
-              </IconButton>
-            </Tooltip>
-          </CardActions>
-        </Card>
-      </Grid>
-    ))
-
-    const renderAdd = (
-      <Grid item={true} xs={2} key={'addfaceCard'}>
-        <Card className={this.props.classes.card}>
-          <img src={imageList2} alt={'add face'} height={140} />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              Add
-            </Typography>
-            <TextField
-              label={'Enter name'}
-              className={this.props.classes.formControl}
-              value={this.state.inputValue.new}
-              onInput={this.handleInput('new')}
-              margin="normal"
-            />
-          </CardContent>
-          <CardActions>
-            <Tooltip title="Add">
-              <IconButton color="primary" onClick={this.handleAccept('new')}>
-                <IconAdd />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Cancel">
-              <IconButton
-                color="primary"
-                onClick={this.handleInputCancel('new')}>
-                <IconCancel />
-              </IconButton>
-            </Tooltip>
-          </CardActions>
-        </Card>
-      </Grid>
-    )
-
     if (this.state.isLoading) {
       return (
         <Layout
@@ -375,15 +208,31 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
         gridPhone={12}
         content={
           <div>
-            <Grid
-              container={true}
-              className={this.props.classes.grid}
-              spacing={16}>
-              {renderList}
-              {renderAdd}
-            </Grid>
-            {renderDialogRename}
-            {renderDialogDelete}
+            <RenderList
+              peoples={this.state.peoples}
+              handleAccept={this.handleAccept}
+              handleInput={this.handleInput}
+              handleInputCancel={this.handleInputCancel}
+              handleEdit={this.handleEdit}
+              toggleDialog={this.toggleDialog}
+              newValue={this.state.inputValue.new}
+            />
+            <DialogRename
+              dialogStatus={this.state.dialog.rename}
+              username={this.state.dialogKey.rename}
+              imageSrc={this.state.dialogImg}
+              toggleDialog={this.toggleDialog}
+              handleAccept={this.handleAccept}
+              handleInput={this.handleInput}
+              rename={this.state.inputValue.rename}
+            />
+            <DialogDelete
+              dialogStatus={this.state.dialog.delete}
+              username={this.state.dialogKey.delete}
+              imageSrc={this.state.dialogImg}
+              toggleDialog={this.toggleDialog}
+              handleAccept={this.handleAccept}
+            />
           </div>
         }
       />
@@ -395,7 +244,7 @@ AdminList.propTypes = {
   classes: PropTypes.object.isRequired,
   people: PropTypes.shape({
     peoples: PropTypes.array,
-    errors: PropTypes.string
+    errors: PropTypes.object
   })
 }
 

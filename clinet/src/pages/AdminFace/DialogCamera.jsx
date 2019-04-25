@@ -99,7 +99,7 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  handleAccept = () => {
+  handleEntered = () => {
     if (this.state.isCaptured) {
       const canvas = document.getElementById('face_camera_screenshot')
       if (
@@ -109,6 +109,14 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
         const ctx = canvas.getContext('2d')
         // $flow-disable-line
         ctx.putImageData(this.state.imageBuff, 0, 0)
+      }
+    }
+  }
+
+  handleAccept = () => {
+    if (this.state.isCaptured) {
+      const canvas = document.getElementById('face_camera_screenshot')
+      if (canvas instanceof HTMLCanvasElement) {
         const content = canvas.toDataURL('image/jpeg')
         this.props.actionsF.faceAdd64({
           user: this.props.username,
@@ -118,12 +126,6 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
           isPlaying: true,
           isCaptured: false,
           imageBuff: null
-        })
-      } else {
-        this.props.actionsI.infoSet({
-          onoff: true,
-          variant: 'error',
-          message: 'Temp screenshot corrputed, please capture again'
         })
       }
     } else {
@@ -214,6 +216,7 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
       <Dialog
         open={this.props.dialogStatus}
         onClose={this.props.toggleDialog('camera', false, '')}
+        onEntered={this.handleEntered}
         aria-labelledby="select-dialog-title"
         aria-describedby="select-dialog-description"
         maxWidth={'xl'}>

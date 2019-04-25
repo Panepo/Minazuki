@@ -25,7 +25,7 @@ faceRoutes.post('/addFace', async (req, res) => {
 // @desc add face images of base 64 of user to server
 // @access Public
 faceRoutes.post('/addFace64', async (req, res) => {
-  await uploadBase64(req.body.upload)
+  await uploadBase64(req.body)
     .then(result => res.send(result))
     .catch(err => {
       res.status(500).json(err)

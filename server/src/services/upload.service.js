@@ -68,7 +68,7 @@ export async function uploadBase64(upload) {
         sendError(err)
         reject(new Error(err))
       }
-      resolve([`/data/users/${upload.user}/${fileName}`])
+      resolve([`/data/${upload.user}/${fileName}`])
     })
   })
 }

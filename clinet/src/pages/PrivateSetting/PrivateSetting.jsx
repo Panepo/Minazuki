@@ -210,8 +210,8 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     const renderToRegister = () => {
       if (this.props.auth.user.admin) {
         return (
-          <Link to="/register">
-            <Button color="primary">Register</Button>
+          <Link to="/list">
+            <Button color="primary">List</Button>
           </Link>
         )
       }

@@ -79,7 +79,7 @@ type State = {
   dialogKey: string,
   isUploaded: boolean,
   imageFile: string[],
-  imageForm: any | null
+  imageForm: FormData | null
 }
 
 class AdminFace extends React.Component<ProvidedProps & Props, State> {
@@ -93,7 +93,8 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
     },
     dialogKey: '',
     isUploaded: false,
-    imageFile: []
+    imageFile: [],
+    imageForm: null
   }
 
   componentDidMount = async () => {
@@ -119,23 +120,14 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
       case 'delete':
         this.props.actionsF.faceDelete({
           user: this.props.match.params.user,
-          name: basename(this.state.dialogKey)
+          filename: basename(this.state.dialogKey)
         })
         this.setState({
           dialog: { ...this.state.dialog, [target]: false }
         })
         break
       case 'upload':
-        const formData = new FormData()
-        const fieldName = this.props.match.params.user
-        const fileList = this.state.imageFile
-
-        formData.append('user', fieldName)
-        Array.from(Array(fileList.length).keys()).map(x =>
-          formData.append(fieldName, fileList[x], basename(fileList[x]))
-        )
-
-        this.props.actionsF.faceAdd(formData)
+        this.props.actionsF.faceAdd(this.state.imageForm)
         this.setState({
           dialog: { ...this.state.dialog, [target]: false }
         })
@@ -156,15 +148,27 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
       }
     }
 
+    const formData = new FormData()
+    formData.append('user', this.props.match.params.user)
+    Array.from(Array(event.target.files.length).keys()).map(x =>
+      formData.append(
+        event.target.name,
+        event.target.files[x],
+        event.target.files[x].name
+      )
+    )
+
     if (data.length > 0) {
       this.setState({
         imageFile: data,
-        isUploaded: true
+        isUploaded: true,
+        imageForm: formData
       })
     } else {
       this.setState({
         imageFile: [],
-        isUploaded: false
+        isUploaded: false,
+        imageForm: null
       })
     }
   }
@@ -279,6 +283,7 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
             <input
               className={this.props.classes.hidden}
               type="file"
+              name="fileUpload"
               accept="image/*"
               onChange={this.handleUpload}
               required

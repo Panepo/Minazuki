@@ -1,8 +1,6 @@
 import multer from 'multer'
 import { readFileSync, unlinkSync, writeFile } from 'fs'
 import { join } from 'path'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-tw'
 import sharp from 'sharp'
 import { dataFolder } from './storage.service'
 import { sendError } from '../helpers/generic.helper'
@@ -16,7 +14,7 @@ export const storage = multer.diskStorage({
   filename: function(req, file, callback) {
     const fileComponents = file.originalname.split('.')
     const fileExtension = fileComponents[fileComponents.length - 1]
-    const filename = `${file.originalname}_${dayjs()}.${fileExtension}`
+    const filename = `${file.originalname}_${Date.now()}.${fileExtension}`
     callback(null, filename)
   }
 })
@@ -61,7 +59,7 @@ export async function uploadFile(upload, req, res) {
 }
 
 export async function uploadBase64(upload) {
-  const fileName = `${upload.user}_${dayjs()}.jpg`
+  const fileName = `${upload.user}_${Date.now()}.jpg`
   const imgPath = join(dataFolder, upload.user, fileName)
   const content = upload.content.split(',')[1]
   return new Promise(async (resolve, reject) => {

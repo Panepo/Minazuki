@@ -20,14 +20,10 @@ export const faceDelete = (input: { user: string, filename: string }) => (
     .catch(err => dispatch(setError(err)))
 }
 
-export const faceAdd = (input: any) => (dispatch: Dispatch) => {
-  axios({
-    method: 'post',
-    url: '../face/addFace',
-    data: input,
-    config: { headers: { 'Content-Type': 'multipart/form-data' } }
-  })
-    .then(res => dispatch(faceGetAll(input.user)))
+export const faceAdd = (input: FormData) => (dispatch: Dispatch) => {
+  axios
+    .post('../face/addFace', input)
+    .then(res => dispatch(faceGetAll(input.get('user'))))
     .catch(err => dispatch(setError(err)))
 }
 

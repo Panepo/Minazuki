@@ -33,8 +33,8 @@ if (process.env.NODE_ENV !== 'production') app.use(cors())
 app.use(passport.initialize())
 passportConfig(passport)
 app.use(helmet())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+app.use(bodyParser.json({ limit: '50mb', extended: true }))
 
 // ROUTES
 app.use('/auth', authRoutes)

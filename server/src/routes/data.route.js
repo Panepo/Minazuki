@@ -3,7 +3,6 @@ import bodyparser from 'body-parser'
 import { writeFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import { dataFolder } from '../services/storage.service'
-import { validateData } from '../helpers/auth.helper'
 import { sendError } from '../helpers/generic.helper'
 
 const dataRoutes = express.Router()
@@ -31,11 +30,6 @@ dataRoutes.get('/getAll', (req, res) => {
 // @access Public
 dataRoutes.post('/save', async (req, res) => {
   const content = JSON.stringify(req.body.data)
-  const { errors, isValid } = validateData(content)
-  if (!isValid) {
-    return res.status(400).json(errors)
-  }
-
   writeFileSync(join(dataFolder, facesFileName), content)
   res.json({ success: true })
 })

@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import type { Dispatch } from '../../models'
 import * as actionPeople from '../../actions/actionPeople'
 import * as actionInfo from '../../actions/actionInfo'
+import * as actionData from '../../actions/actionData'
 import type { PeopleData } from '../../models/modelPeople'
 import * as faceapi from 'face-api.js'
 import Layout from '../Layout'
@@ -22,6 +23,7 @@ import TextField from '@material-ui/core/TextField'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import ImageGridList from '../../componments/ImageGridList'
 import { extractImagePath } from '../../helpers/file.helper'
+import axios from 'axios'
 
 const styles = (theme: Object) => ({
   divider: {
@@ -43,7 +45,8 @@ type ProvidedProps = {
 type Props = {
   peoples: PeopleData[],
   actionsP: Dispatch,
-  actionsI: Dispatch
+  actionsI: Dispatch,
+  actionsD: Dispatch
 }
 
 type State = {
@@ -52,7 +55,7 @@ type State = {
   isTrained: boolean,
   list: any,
   processTime: string,
-  labeledDescriptors: any[]
+  data: any[]
 }
 
 class AdminTrain extends React.Component<ProvidedProps & Props, State> {
@@ -64,7 +67,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
       isTrained: false,
       list: extractImagePath(props.peoples),
       processTime: '0',
-      labeledDescriptors: []
+      data: []
     }
   }
 
@@ -85,7 +88,19 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
   }
 
   handleSave = () => {
-    console.log(this.state.labeledDescriptors)
+    this.props.actionsD.dataSave({ data: this.state.data })
+  }
+
+  handleGet = () => {
+    axios
+      .get('data/getAll')
+      .then(res => {
+        this.setState({
+          isTrained: true,
+          data: res.data
+        })
+      })
+      .catch(err => console.log(err))
   }
 
   handleImport = (event: any) => {
@@ -95,7 +110,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
       fr.onload = e => {
         this.setState({
           isTrained: true,
-          labeledDescriptors: JSON.parse(e.target.result)
+          data: JSON.parse(e.target.result)
         })
       }
       fr.readAsText(files.item(0))
@@ -105,7 +120,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
   handleExport = () => {
     const data =
       'text/json;charset=utf-8,' +
-      encodeURIComponent(JSON.stringify(this.state.labeledDescriptors))
+      encodeURIComponent(JSON.stringify(this.state.data))
     let downloadAnchorNode = document.createElement('a')
     downloadAnchorNode.setAttribute('href', 'data:' + data)
     downloadAnchorNode.setAttribute('download', 'faces.json')
@@ -148,7 +163,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
     if (labeledDescriptors.length > 0) {
       this.setState({
         isTrained: true,
-        labeledDescriptors: labeledDescriptors
+        data: labeledDescriptors
       })
     }
   }
@@ -184,6 +199,9 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
             <CardActions>
               <Button color="primary" onClick={this.handleTrain}>
                 Train
+              </Button>
+              <Button color="primary" onClick={this.handleGet}>
+                Get
               </Button>
               {this.state.isTrained ? (
                 <Button color="primary" onClick={this.handleSave}>
@@ -241,7 +259,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     actionsP: bindActionCreators(actionPeople, dispatch),
-    actionsI: bindActionCreators(actionInfo, dispatch)
+    actionsI: bindActionCreators(actionInfo, dispatch),
+    actionsD: bindActionCreators(actionData, dispatch)
   }
 }
 

@@ -4,14 +4,12 @@ import type Action from './modelAction'
 
 export const actionData = {
   DATA_GET: 'DATA_GET',
-  DATA_SEND: 'DATA_SEND',
-  DATA_ERROR: 'DATA_ERROR'
+  DATA_GETERROR: 'DATA_GETERROR'
 }
 
-export type ActionAuth = Action<Object>
+export type ActionData = Action<Object>
 
-export type StateAuth = {
-  faceMatcher: any | null,
-  faceData: any,
-  error: Object
+export type StateData = {
+  data: Object,
+  errors: Object
 }

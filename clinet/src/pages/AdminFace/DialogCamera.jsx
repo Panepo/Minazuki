@@ -99,18 +99,12 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  handleEntered = () => {
-    if (this.state.isCaptured) {
-      const canvas = document.getElementById('face_camera_screenshot')
-      if (
-        canvas instanceof HTMLCanvasElement &&
-        this.state.imageBuff instanceof ImageData
-      ) {
-        const ctx = canvas.getContext('2d')
-        // $flow-disable-line
-        ctx.putImageData(this.state.imageBuff, 0, 0)
-      }
-    }
+  handleExited = () => {
+    this.setState({
+      isPlaying: false,
+      isCaptured: false,
+      imageBuff: null
+    })
   }
 
   handleAccept = () => {
@@ -216,7 +210,7 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
       <Dialog
         open={this.props.dialogStatus}
         onClose={this.props.toggleDialog('camera', false, '')}
-        onEntered={this.handleEntered}
+        onExited={this.handleExited}
         aria-labelledby="select-dialog-title"
         aria-describedby="select-dialog-description"
         maxWidth={'xl'}>

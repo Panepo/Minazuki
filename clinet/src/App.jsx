@@ -20,12 +20,11 @@ import Home from './pages/PublicHome/Home'
 import Signin from './pages/PublicSignin/Signin'
 import Signup from './pages/PublicSignup/Signup'
 import Sensor from './pages/PublicSignup/Signup'
-import Register from './pages/PublicSignup/Signup'
 // import Sensor from './pages/PrivateSensor/PrivateSensor'
 import Setting from './pages/PrivateSetting/PrivateSetting'
-// import Register from './pages/AdminRegister/AdminRegister'
 import List from './pages/AdminList/AdminList'
 import Face from './pages/AdminFace/AdminFace'
+import Train from './pages/AdminTrain/AdminTrain'
 
 const styles = (theme: Object) => ({
   root: {
@@ -49,9 +48,9 @@ const routes = () => {
       <Route exact={true} path="/signup" component={Signup} />
       <PrivateRoute exact={true} path="/sensor" component={Sensor} />
       <PrivateRoute exact={true} path="/setting" component={Setting} />
-      <AdminRoute exact={true} path="/register" component={Register} />
       <AdminRoute exact={true} path="/list" component={List} />
       <AdminRoute exact={true} path="/list/:user" component={Face} />
+      <AdminRoute exact={true} path="/train" component={Train} />
       <Route component={NotFound} />
     </Switch>
   )

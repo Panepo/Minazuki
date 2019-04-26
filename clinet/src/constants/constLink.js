@@ -6,8 +6,8 @@ export const linkHeader: LinkSite[] = [
   { text: 'Home', link: '/home' },
   { text: 'Sensor', link: '/sensor' },
   { text: 'Setting', link: '/setting' },
-  { text: 'Register', link: '/register' },
-  { text: 'List', link: '/list' }
+  { text: 'List', link: '/list' },
+  { text: 'Train', link: '/train' }
 ]
 
 export const linkDrawer: LinkSite[] = [

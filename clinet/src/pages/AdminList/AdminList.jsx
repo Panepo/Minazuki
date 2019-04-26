@@ -7,29 +7,17 @@ import { connect } from 'react-redux'
 import type { Dispatch, RouterHistory } from '../../models'
 import * as actionPeople from '../../actions/actionPeople'
 import * as actionInfo from '../../actions/actionInfo'
-import type { StatePeople, PeopleData } from '../../models/modelPeople'
+import type { PeopleData } from '../../models/modelPeople'
 import { withRouter } from 'react-router-dom'
 import Layout from '../Layout'
 import { withStyles } from '@material-ui/core'
-import Card from '@material-ui/core/Card'
-import Typography from '@material-ui/core/Typography'
-import LinearProgress from '@material-ui/core/LinearProgress'
-
 import DialogRename from './DialogRename'
 import DialogDelete from './DialogDelete'
 import RenderList from './RenderList'
 
 const imageList = require('../../images/list.jpg')
 
-const styles = (theme: Object) => ({
-  paper: {
-    borderRadius: '2px',
-    paddingTop: '40px',
-    paddingBottom: '40px',
-    paddingLeft: '40px',
-    paddingRight: '40px'
-  }
-})
+const styles = (theme: Object) => ({})
 
 type ProvidedProps = {
   classes: Object,
@@ -39,14 +27,12 @@ type ProvidedProps = {
 
 type Props = {
   classes: Object,
-  people: StatePeople,
+  peoples: PeopleData[],
   actionsP: Dispatch,
   actionsI: Dispatch
 }
 
 type State = {
-  isLoading: boolean,
-  peoples: PeopleData[],
   dialog: {
     rename: boolean,
     delete: boolean
@@ -64,8 +50,6 @@ type State = {
 
 class AdminList extends React.Component<ProvidedProps & Props, State> {
   state = {
-    isLoading: true,
-    peoples: [],
     dialog: {
       rename: false,
       delete: false
@@ -83,13 +67,6 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
 
   componentDidMount = async () => {
     await this.props.actionsP.peopleGetAll()
-    this.setState({ isLoading: false })
-  }
-
-  static getDerivedStateFromProps(nextProps: ProvidedProps & Props) {
-    if (nextProps.people.peoples) {
-      return { peoples: nextProps.people.peoples }
-    } else return null
   }
 
   // ================================================================================
@@ -159,10 +136,10 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
 
   toggleDialog = (target: string, onoff: boolean, name: string) => () => {
     let dialogImg = ''
-    for (let i = 0; i < this.state.peoples.length; i += 1) {
-      if (this.state.peoples[i].name === name) {
-        if (this.state.peoples[i].files[0]) {
-          dialogImg = this.state.peoples[i].files[0]
+    for (let i = 0; i < this.props.peoples.length; i += 1) {
+      if (this.props.peoples[i].name === name) {
+        if (this.props.peoples[i].files[0]) {
+          dialogImg = this.props.peoples[i].files[0]
         } else {
           dialogImg = imageList
         }
@@ -185,21 +162,6 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <Layout
-          helmet={true}
-          title={'Face List | Minazuki'}
-          content={
-            <Card className={this.props.classes.paper}>
-              <Typography>Loading...</Typography>
-              <LinearProgress />
-            </Card>
-          }
-        />
-      )
-    }
-
     return (
       <Layout
         helmet={true}
@@ -209,7 +171,7 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
         content={
           <div>
             <RenderList
-              peoples={this.state.peoples}
+              peoples={this.props.peoples}
               handleAccept={this.handleAccept}
               handleInput={this.handleInput}
               handleInputCancel={this.handleInputCancel}
@@ -242,15 +204,12 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
 
 AdminList.propTypes = {
   classes: PropTypes.object.isRequired,
-  people: PropTypes.shape({
-    peoples: PropTypes.array,
-    errors: PropTypes.object
-  })
+  peoples: PropTypes.array.isRequired
 }
 
 const mapStateToProps = state => {
   return {
-    people: state.reducerPeople
+    peoples: state.reducerPeople.peoples
   }
 }
 

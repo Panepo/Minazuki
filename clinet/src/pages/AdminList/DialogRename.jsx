@@ -78,7 +78,7 @@ DialogRename.propTypes = {
   toggleDialog: PropTypes.func.isRequired,
   handleAccept: PropTypes.func.isRequired,
   handleInput: PropTypes.func.isRequired,
-  imageSrc: PropTypes.string.isRequired,
+  imageSrc: PropTypes.string,
   rename: PropTypes.string.isRequired
 }
 

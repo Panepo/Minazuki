@@ -11,24 +11,12 @@ import type { StateFace } from '../../models/modelFace'
 import { basename } from 'path'
 import Layout from '../Layout'
 import { withStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import Typography from '@material-ui/core/Typography'
-import LinearProgress from '@material-ui/core/LinearProgress'
-
 import DialogUpload from './DialogUpload'
 import DialogDelete from './DialogDelete'
 import DialogCamera from './DialogCamera'
 import RenderList from './RenderList'
 
-const styles = (theme: Object) => ({
-  paper: {
-    borderRadius: '2px',
-    paddingTop: '40px',
-    paddingBottom: '40px',
-    paddingLeft: '40px',
-    paddingRight: '40px'
-  }
-})
+const styles = (theme: Object) => ({})
 
 type ProvidedProps = {
   classes: Object,
@@ -43,7 +31,6 @@ type Props = {
 }
 
 type State = {
-  isLoading: boolean,
   faces: string[],
   dialog: {
     delete: boolean,
@@ -55,7 +42,6 @@ type State = {
 
 class AdminFace extends React.Component<ProvidedProps & Props, State> {
   state = {
-    isLoading: true,
     faces: [],
     dialog: {
       delete: false,
@@ -67,7 +53,6 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
 
   componentDidMount = async () => {
     await this.props.actionsF.faceGetAll(this.props.match.params.user)
-    this.setState({ isLoading: false })
   }
 
   static getDerivedStateFromProps(nextProps: ProvidedProps & Props) {
@@ -111,20 +96,6 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <Layout
-          title={this.props.match.params.user + ' | Minazuki'}
-          content={
-            <Card className={this.props.classes.paper}>
-              <Typography>Loading...</Typography>
-              <LinearProgress />
-            </Card>
-          }
-        />
-      )
-    }
-
     return (
       <Layout
         title={this.props.match.params.user + ' | Minazuki'}

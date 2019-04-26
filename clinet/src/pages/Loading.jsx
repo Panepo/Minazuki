@@ -11,20 +11,24 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = (theme: Object) => ({
   paper: {
     borderRadius: '2px',
-    paddingTop: '80px',
-    paddingBottom: '80px',
-    paddingLeft: '56px',
-    paddingRight: '56px'
+    paddingTop: '40px',
+    paddingBottom: '40px',
+    paddingLeft: '40px',
+    paddingRight: '40px'
   }
 })
 
 type Props = {
-  classes: Object
+  classes: Object,
+  helmet: boolean,
+  title: string
 }
 
 const Loading = (props: Props) => {
   return (
     <Layout
+      helmet={props.helmet}
+      title={props.title}
       content={
         <Paper className={props.classes.paper}>
           <Typography>Loading...</Typography>
@@ -36,7 +40,9 @@ const Loading = (props: Props) => {
 }
 
 Loading.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  helmet: PropTypes.bool,
+  title: PropTypes.string
 }
 
 export default withStyles(styles)(Loading)

@@ -1,7 +1,6 @@
 // @flow
 
 import type Action from './modelAction'
-import type { PeopleData } from './modelPeople'
 
 export const actionFace = {
   FACE_GETALL: 'FACE_GETALL',
@@ -11,6 +10,6 @@ export const actionFace = {
 export type ActionFace = Action<Object>
 
 export type StateFace = {
-  people: PeopleData,
+  people: string[],
   errors: Object
 }

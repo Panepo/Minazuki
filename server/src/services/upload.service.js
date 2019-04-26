@@ -13,9 +13,10 @@ export const storage = multer.diskStorage({
   },
   filename: function(req, file, callback) {
     const fileComponents = file.originalname.split('.')
+    const filename = fileComponents[0]
     const fileExtension = fileComponents[fileComponents.length - 1]
-    const filename = `${file.originalname}_${Date.now()}.${fileExtension}`
-    callback(null, filename)
+    const filenameModified = `${filename}_${Date.now()}.${fileExtension}`
+    callback(null, filenameModified)
   }
 })
 

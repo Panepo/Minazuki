@@ -116,14 +116,11 @@ class Header extends React.Component<ProvidedProps & Props, State> {
   render() {
     const { classes } = this.props
 
-    const renderLink = linkHeader.reduce((output: any[], data: Link) => {
-      output.push(
-        <Link to={data.link} key={data.text}>
-          <Button color="primary">{data.text}</Button>
-        </Link>
-      )
-      return output
-    }, [])
+    const renderLink = linkHeader.map((data: Link) => (
+      <Link to={data.link} key={data.text}>
+        <Button color="primary">{data.text}</Button>
+      </Link>
+    ))
 
     const renderDrawer = (
       <List>

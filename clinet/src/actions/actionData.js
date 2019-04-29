@@ -4,11 +4,11 @@ import type { Dispatch } from '../models/'
 import axios from 'axios'
 import { infoSet } from './actionInfo'
 
-export const dataGet = () => (dispatch: Dispatch) => {
+export const dataLoad = () => (dispatch: Dispatch) => {
   axios
-    .get('data/getAll')
+    .get('data/load')
     .then(res => {
-      dispatch({ type: actionData.DATA_GET, payload: res.data })
+      dispatch({ type: actionData.DATA_LOAD, payload: res.data })
     })
     .catch(err => dispatch(setError(err)))
 }
@@ -22,6 +22,13 @@ export const dataSave = (input: object) => (dispatch: Dispatch) => {
       )
     )
     .catch(err => dispatch(setError(err)))
+}
+
+export const dataImport = (input: object) => {
+  return {
+    type: actionData.DATA_IMPORT,
+    payload: input
+  }
 }
 
 export const setError = (err: Object): Action<Object> => (

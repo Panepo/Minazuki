@@ -10,10 +10,10 @@ dataRoutes.use(bodyparser.json())
 
 const facesFileName = 'faces.json'
 
-// @route GET data/getAll
+// @route GET data/load
 // @desc get faces.json from server
 // @access Public
-dataRoutes.get('/getAll', (req, res) => {
+dataRoutes.get('/load', (req, res) => {
   const facesFile = join(dataFolder, facesFileName)
   if (!existsSync(facesFile)) {
     sendError('faces.json is missing')

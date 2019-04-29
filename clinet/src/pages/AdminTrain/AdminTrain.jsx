@@ -9,6 +9,7 @@ import * as actionPeople from '../../actions/actionPeople'
 import * as actionInfo from '../../actions/actionInfo'
 import * as actionData from '../../actions/actionData'
 import type { PeopleData } from '../../models/modelPeople'
+import type { StateData } from '../../models/modelData'
 import * as faceapi from 'face-api.js'
 import Layout from '../Layout'
 import Loading from '../Loading'
@@ -21,9 +22,9 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import Tooltip from '@material-ui/core/Tooltip'
 import ImageGridList from '../../componments/ImageGridList'
 import { extractImagePath } from '../../helpers/file.helper'
-import axios from 'axios'
 
 const styles = (theme: Object) => ({
   divider: {
@@ -44,6 +45,7 @@ type ProvidedProps = {
 
 type Props = {
   peoples: PeopleData[],
+  data: StateData,
   actionsP: Dispatch,
   actionsI: Dispatch,
   actionsD: Dispatch
@@ -52,10 +54,8 @@ type Props = {
 type State = {
   isLoading: boolean,
   isBusy: boolean,
-  isTrained: boolean,
   list: any,
-  processTime: string,
-  data: any[]
+  processTime: string
 }
 
 class AdminTrain extends React.Component<ProvidedProps & Props, State> {
@@ -64,10 +64,8 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
     this.state = {
       isLoading: true,
       isBusy: false,
-      isTrained: false,
       list: extractImagePath(props.peoples),
-      processTime: '0',
-      data: []
+      processTime: '0'
     }
   }
 
@@ -88,19 +86,11 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
   }
 
   handleSave = () => {
-    this.props.actionsD.dataSave({ data: this.state.data })
+    this.props.actionsD.dataSave({ data: this.props.data.data })
   }
 
-  handleGet = () => {
-    axios
-      .get('data/getAll')
-      .then(res => {
-        this.setState({
-          isTrained: true,
-          data: res.data
-        })
-      })
-      .catch(err => console.log(err))
+  handleLoad = () => {
+    this.props.actionsD.dataLoad()
   }
 
   handleImport = (event: any) => {
@@ -108,10 +98,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
     if (files.length > 0) {
       let fr = new FileReader()
       fr.onload = e => {
-        this.setState({
-          isTrained: true,
-          data: JSON.parse(e.target.result)
-        })
+        this.props.actionsD.dataImport(JSON.parse(e.target.result))
       }
       fr.readAsText(files.item(0))
     }
@@ -120,7 +107,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
   handleExport = () => {
     const data =
       'text/json;charset=utf-8,' +
-      encodeURIComponent(JSON.stringify(this.state.data))
+      encodeURIComponent(JSON.stringify(this.props.data.data))
     let downloadAnchorNode = document.createElement('a')
     downloadAnchorNode.setAttribute('href', 'data:' + data)
     downloadAnchorNode.setAttribute('download', 'faces.json')
@@ -161,10 +148,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
     })
 
     if (labeledDescriptors.length > 0) {
-      this.setState({
-        isTrained: true,
-        data: labeledDescriptors
-      })
+      this.props.actionsD.dataImport(labeledDescriptors)
     }
   }
 
@@ -197,30 +181,40 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               />
             </CardContent>
             <CardActions>
-              <Button color="primary" onClick={this.handleTrain}>
-                Train
-              </Button>
-              <Button color="primary" onClick={this.handleGet}>
-                Get
-              </Button>
-              {this.state.isTrained ? (
-                <Button color="primary" onClick={this.handleSave}>
+              <Tooltip title="Training to get face data">
+                <Button color="primary" onClick={this.handleTrain}>
+                  Train
+                </Button>
+              </Tooltip>
+              <Tooltip title="Load face data from server">
+                <Button color="primary" onClick={this.handleLoad}>
+                  Load
+                </Button>
+              </Tooltip>
+              {this.props.data.data.length > 0 ? (
+                <Tooltip title="Save face data to server">
+                  <Button color="primary" onClick={this.handleSave}>
                   Save
-                </Button>
+                  </Button>
+                </Tooltip>
               ) : null}
-              <Button color="primary" component="label">
-                Import
-                <input
-                  className={this.props.classes.hidden}
-                  type="file"
-                  accept="application/json"
-                  onChange={this.handleImport}
-                />
-              </Button>
-              {this.state.isTrained ? (
-                <Button color="primary" onClick={this.handleExport}>
-                  Export
+              <Tooltip title="Import face data from computer">
+                <Button color="primary" component="label">
+                  Import
+                  <input
+                    className={this.props.classes.hidden}
+                    type="file"
+                    accept="application/json"
+                    onChange={this.handleImport}
+                  />
                 </Button>
+              </Tooltip>
+              {this.props.data.data.length > 0 ? (
+                <Tooltip title="Export face data to computer">
+                  <Button color="primary" onClick={this.handleExport}>
+                    Export
+                  </Button>
+                </Tooltip>
               ) : null}
               <Link to="/sensor">
                 <Button color="primary">Sensor</Button>
@@ -233,7 +227,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               <TextField label="Process time" value={this.state.processTime} />
               {this.state.isBusy ? (
                 <div>
-                  <Typography>Loading...</Typography>
+                  <Typography>Training...</Typography>
                   <LinearProgress />
                 </div>
               ) : null}
@@ -252,7 +246,8 @@ AdminTrain.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    peoples: state.reducerPeople.peoples
+    peoples: state.reducerPeople.peoples,
+    data: state.reducerData
   }
 }
 

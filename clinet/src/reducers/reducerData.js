@@ -5,12 +5,15 @@ import { actionData } from '../models/modelData'
 import type { StateData } from '../models/modelData'
 
 const initialState: StateData = {
-  data: {},
+  data: [],
   errors: {}
 }
 
 export const reducerData = createReducer(initialState, {
-  [actionData.DATA_GET](state: StateData, action: Action<Object>) {
+  [actionData.DATA_LOAD](state: StateData, action: Action<Object>) {
+    return { ...state, data: action.payload }
+  },
+  [actionData.DATA_IMPORT](state: StateData, action: Action<Object>) {
     return { ...state, data: action.payload }
   },
   [actionData.DATA_GETERROR](state: StateData, action: Action<Object>) {

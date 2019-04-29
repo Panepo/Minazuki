@@ -136,25 +136,19 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   renderButton = () => {
-    const renderWebcamPower = (onoff: boolean) => {
-      if (onoff) {
-        return (
-          <Button color="secondary" onClick={this.handleWebcam}>
-            Stop
-          </Button>
-        )
-      } else {
-        return (
-          <Button color="primary" onClick={this.handleWebcam}>
-            Start
-          </Button>
-        )
-      }
-    }
+    const renderWebcamPower = this.state.isPlaying ? (
+      <Button color="secondary" onClick={this.handleWebcam}>
+        Webcam Stop
+      </Button>
+    ) : (
+      <Button color="primary" onClick={this.handleWebcam}>
+        Webcam Start
+      </Button>
+    )
 
     return (
       <DialogActions>
-        {renderWebcamPower(this.state.isPlaying)}
+        {renderWebcamPower}
         <Button color="primary" onClick={this.handleCapture}>
           Capture
         </Button>

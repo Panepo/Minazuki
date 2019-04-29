@@ -194,7 +194,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               {this.props.data.data.length > 0 ? (
                 <Tooltip title="Save face data to server">
                   <Button color="primary" onClick={this.handleSave}>
-                  Save
+                    Save
                   </Button>
                 </Tooltip>
               ) : null}

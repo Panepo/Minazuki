@@ -247,10 +247,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
           }
           if (this.state.isRecording) this.props.actionsR.recordAdd(record)
 
-          return new faceapi.BoxWithText(
-            detection.box,
-            match
-          )
+          return new faceapi.BoxWithText(detection.box, match)
         })
       )
 

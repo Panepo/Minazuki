@@ -17,7 +17,10 @@ export const reducerRecord = createReducer(initialState, {
   [actionRecord.RECORD_ADD](state: StateRecord, action: Action<RecordData>) {
     if (validateRepeat(action.payload)) {
       dbData.insert(action.payload)
-      const dbAll = dbData.chain().simplesort("date").data()
+      const dbAll = dbData
+        .chain()
+        .simplesort('date')
+        .data()
       return { ...state, data: dbAll }
     } else {
       return state

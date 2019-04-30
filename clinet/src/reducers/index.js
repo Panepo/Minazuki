@@ -7,6 +7,7 @@ import * as reducerInfo from './reducerInfo'
 import * as reducerPeople from './reducerPeople'
 import * as reducerFace from './reducerFace'
 import * as reducerData from './reducerData'
+import * as reducerRecord from './reducerRecord'
 
 const rootReducer = (history: History) =>
   combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = (history: History) =>
     ...reducerInfo,
     ...reducerPeople,
     ...reducerFace,
-    ...reducerData
+    ...reducerData,
+    ...reducerRecord
   })
 
 export default rootReducer

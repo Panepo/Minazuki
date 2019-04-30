@@ -10,7 +10,7 @@ import * as actionData from '../../actions/actionData'
 import * as actionRecord from '../../actions/actionRecord'
 
 import type { StateData } from '../../models/modelData'
-import type { StateRecord } from '../../models/modelRecord'
+import type { StateRecord, RecordData } from '../../models/modelRecord'
 import type { StateSetting } from '../../models/modelSetting'
 
 import * as faceapi from 'face-api.js'
@@ -236,14 +236,22 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     if (results) {
       const resizedResults = resizeCanvasAndResults(image, canvas, results)
       const boxesWithText = await Promise.all(
-        resizedResults.map(
-          async ({ detection, descriptor }) =>
-            new faceapi.BoxWithText(
-              detection.box,
-              // $flow-disable-line
-              this.faceMatcher.findBestMatch(descriptor).toString()
-            )
-        )
+        resizedResults.map(async ({ detection, descriptor }) => {
+          // $flow-disable-line
+          const match = this.faceMatcher.findBestMatch(descriptor).toString()
+          const matchSplit = match.split(' ')
+
+          const record: RecordData = {
+            name: matchSplit[0],
+            date: Date.now()
+          }
+          if (this.state.isRecording) this.props.actionsR.recordAdd(record)
+
+          return new faceapi.BoxWithText(
+            detection.box,
+            match
+          )
+        })
       )
 
       faceapi.drawDetection(canvas, boxesWithText, {

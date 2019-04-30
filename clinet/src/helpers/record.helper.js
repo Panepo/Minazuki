@@ -1,17 +1,22 @@
 // @flow
 
 import type { RecordData } from '../models/modelRecord'
+import { dbData } from '../reducers/reducerRecord'
 
-export function validateRepeat(input: RecordData, data: RecordData[]) {
-  const len = data.length
-  if (len === 0) return true
+export function validateRepeat(input: RecordData) {
+  const date = Date.now()
+  const data = dbData
+    .chain()
+    .find({
+      $and: [
+        { name: input.name },
+        {
+          date: { $gt: date - 60000 } // 1 min
+        }
+      ]
+    })
+    .data()
 
-  const currentTime = Date.now()
-  const expireTime = 1800 // seconds
-  if (currentTime - data[len - 1].date > expireTime) {
-    return true
-  }
-
-  // still needed to check repeat people name
-  return false
+  if (data.length > 0) return false
+  return true
 }

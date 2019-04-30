@@ -88,7 +88,7 @@ type State = {
 
 class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
   state = {
-    isLoading: false,
+    isLoading: true,
     isPlaying: false,
     isSensing: false,
     processTime: '0',
@@ -116,7 +116,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     await faceapi.loadTinyFaceDetectorModel('/models')
     await faceapi.loadFaceLandmarkTinyModel('/models')
     await faceapi.loadFaceRecognitionModel('/models')
-    /* const initial = document.getElementById('initial_black')
+    const initial = document.getElementById('initial_black')
     await faceapi
       .detectAllFaces(
         initial,
@@ -126,7 +126,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         })
       )
       .withFaceLandmarks(true)
-      .withFaceDescriptors() */
+      .withFaceDescriptors()
 
     this.setState({ isLoading: false })
   }
@@ -225,7 +225,10 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         )
       )
 
-      faceapi.drawDetection(canvas, boxesWithText, { boxColor: 'lime' })
+      faceapi.drawDetection(canvas, boxesWithText, {
+        boxColor: 'yellow',
+        textColor: 'lime'
+      })
     }
   }
 

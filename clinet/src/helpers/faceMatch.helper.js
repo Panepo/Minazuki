@@ -18,4 +18,3 @@ export async function createFaceMatcher(
   )
   return new faceapi.FaceMatcher(labeledFaceDescriptors)
 }
-

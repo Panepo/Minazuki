@@ -149,15 +149,19 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
     return (
       <DialogActions>
         {renderWebcamPower}
-        <Button color="primary" onClick={this.handleCapture}>
-          Capture
-        </Button>
+        {this.state.isPlaying ? (
+          <Button color="primary" onClick={this.handleCapture}>
+            Capture
+          </Button>
+        ) : null}
+        {this.state.isCaptured ? (
+          <Button onClick={this.handleAccept} color="primary">
+            Upload
+          </Button>
+        ) : null}
         <Link to="/setting">
           <Button color="primary">Settings</Button>
         </Link>
-        <Button onClick={this.handleAccept} color="primary">
-          Accept
-        </Button>
         <Button
           onClick={this.props.toggleDialog('camera', false, '')}
           color="secondary">

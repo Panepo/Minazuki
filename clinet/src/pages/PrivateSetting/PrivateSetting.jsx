@@ -225,7 +225,7 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
         <Button color="primary" onClick={this.handleAccept}>
           Accept
         </Button>
-        <Button color="secondary" onClick={this.handleCancel}>
+        <Button color="primary" onClick={this.handleCancel}>
           Cancel
         </Button>
         <Link to="/sensor">

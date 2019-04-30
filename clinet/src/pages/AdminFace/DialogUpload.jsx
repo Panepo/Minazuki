@@ -125,9 +125,11 @@ class DialogUpload extends React.Component<ProvidedProps & Props, State> {
               multiple
             />
           </Button>
-          <Button onClick={this.handleAccept} color="primary">
-            Accept
-          </Button>
+          {this.state.imageFile.length > 0 ? (
+            <Button onClick={this.handleAccept} color="primary">
+              Upload
+            </Button>
+          ) : null}
           <Button
             onClick={this.props.toggleDialog('upload', false, '')}
             color="secondary">

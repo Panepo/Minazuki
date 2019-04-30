@@ -16,7 +16,13 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Button from '@material-ui/core/Button'
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
+import IconCamera from '@material-ui/icons/Camera'
+import IconCapture from '@material-ui/icons/CameraAlt'
+import IconUpload from '@material-ui/icons/CloudUpload'
+import IconCancel from '@material-ui/icons/Cancel'
+import IconSettings from '@material-ui/icons/Settings'
 
 const imageCamera = require('../../images/camera.jpg')
 
@@ -137,36 +143,63 @@ class DialogCamera extends React.Component<ProvidedProps & Props, State> {
 
   renderButton = () => {
     const renderWebcamPower = this.state.isPlaying ? (
-      <Button color="secondary" onClick={this.handleWebcam}>
-        Webcam Stop
-      </Button>
+      <Tooltip title="Webcam stop">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="secondary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     ) : (
-      <Button color="primary" onClick={this.handleWebcam}>
-        Webcam Start
-      </Button>
+      <Tooltip title="Webcam start">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="primary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     )
 
     return (
       <DialogActions>
         {renderWebcamPower}
         {this.state.isPlaying ? (
-          <Button color="primary" onClick={this.handleCapture}>
-            Capture
-          </Button>
+          <Tooltip title="Take a screenshot">
+            <IconButton
+              className={this.props.classes.icon}
+              onClick={this.handleCapture}
+              color="primary">
+              <IconCapture />
+            </IconButton>
+          </Tooltip>
         ) : null}
         {this.state.isCaptured ? (
-          <Button onClick={this.handleAccept} color="primary">
-            Upload
-          </Button>
+          <Tooltip title="Upload Image">
+            <IconButton
+              className={this.props.classes.icon}
+              onClick={this.handleAccept}
+              color="primary">
+              <IconUpload />
+            </IconButton>
+          </Tooltip>
         ) : null}
-        <Link to="/setting">
-          <Button color="primary">Settings</Button>
-        </Link>
-        <Button
-          onClick={this.props.toggleDialog('camera', false, '')}
-          color="secondary">
-          Close
-        </Button>
+        <Tooltip title="Camera settings">
+          <Link to="/setting">
+            <IconButton className={this.props.classes.icon} color="primary">
+              <IconSettings />
+            </IconButton>
+          </Link>
+        </Tooltip>
+        <Tooltip title="Close">
+          <IconButton
+            className={this.props.classes.icon}
+            onClick={this.props.toggleDialog('camera', false, '')}
+            color="secondary">
+            <IconCancel />
+          </IconButton>
+        </Tooltip>
       </DialogActions>
     )
   }

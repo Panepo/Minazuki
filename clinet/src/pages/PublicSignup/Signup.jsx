@@ -66,7 +66,7 @@ class Signup extends React.Component<ProvidedProps & Props, State> {
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       if (this.props.auth.user.admin) {
-        this.props.history.push('/admin/sensor')
+        this.props.history.push('/list')
       } else {
         this.props.history.push('/sensor')
       }
@@ -76,7 +76,7 @@ class Signup extends React.Component<ProvidedProps & Props, State> {
   componentWillReceiveProps(nextProps: ProvidedProps & Props) {
     if (nextProps.auth.isAuthenticated) {
       if (nextProps.auth.user.admin) {
-        this.props.history.push('/admin/sensor')
+        this.props.history.push('/list')
       } else {
         this.props.history.push('/sensor')
       }

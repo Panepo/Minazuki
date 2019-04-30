@@ -25,10 +25,17 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
+
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
+import IconCamera from '@material-ui/icons/Camera'
+import IconSettings from '@material-ui/icons/Settings'
+import IconSensor from '@material-ui/icons/Contacts'
+import IconRecord from '@material-ui/icons/RecordVoiceOver'
+import IconRecords from '@material-ui/icons/LibraryBooks'
 
 const imageSensor = require('../../images/sensor.jpg')
 const imageBlack = require('../../images/black.png')
@@ -81,6 +88,7 @@ type State = {
   isLoading: boolean,
   isPlaying: boolean,
   isSensing: boolean,
+  isRecording: boolean,
   processTime: string,
   detectThreshold: number,
   detectSize: number
@@ -91,6 +99,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     isLoading: true,
     isPlaying: false,
     isSensing: false,
+    isRecording: false,
     processTime: '0',
     detectThreshold: 50,
     detectSize: 160
@@ -176,6 +185,18 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
+  handleRecord = () => {
+    if (this.state.isRecording) {
+      this.setState({
+        isRecording: false
+      })
+    } else {
+      this.setState({
+        isRecording: true
+      })
+    }
+  }
+
   // ================================================================================
   // Facec recognition functions
   // ================================================================================
@@ -237,32 +258,84 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
   renderButton = () => {
     const renderWebcamPower = this.state.isPlaying ? (
-      <Button color="secondary" onClick={this.handleWebcam}>
-        Webcam Stop
-      </Button>
+      <Tooltip title="Webcam stop">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="secondary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     ) : (
-      <Button color="primary" onClick={this.handleWebcam}>
-        Webcam Start
-      </Button>
+      <Tooltip title="Webcam start">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="primary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     )
 
     const renderRecognize = this.state.isSensing ? (
-      <Button color="secondary" onClick={this.handleSense}>
-        Recognize Stop
-      </Button>
+      <Tooltip title="Recognize stop">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleSense}
+          color="secondary">
+          <IconSensor />
+        </IconButton>
+      </Tooltip>
     ) : (
-      <Button color="primary" onClick={this.handleSense}>
-        Recognize Start
-      </Button>
+      <Tooltip title="Recognize start">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleSense}
+          color="primary">
+          <IconSensor />
+        </IconButton>
+      </Tooltip>
+    )
+
+    const renderRecord = this.state.isRecording ? (
+      <Tooltip title="Record stop">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleRecord}
+          color="secondary">
+          <IconRecord />
+        </IconButton>
+      </Tooltip>
+    ) : (
+      <Tooltip title="Record start">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleRecord}
+          color="primary">
+          <IconRecord />
+        </IconButton>
+      </Tooltip>
     )
 
     return (
       <CardActions>
         {renderWebcamPower}
-        <Link to="/setting">
-          <Button color="primary">Settings</Button>
-        </Link>
+        <Tooltip title="Camera settings">
+          <Link to="/setting">
+            <IconButton className={this.props.classes.icon} color="primary">
+              <IconSettings />
+            </IconButton>
+          </Link>
+        </Tooltip>
         {this.state.isPlaying ? renderRecognize : null}
+        {this.state.isSensing ? renderRecord : null}
+        <Tooltip title="To Face Recognization Record">
+          <Link to="/record">
+            <IconButton className={this.props.classes.icon} color="primary">
+              <IconRecords />
+            </IconButton>
+          </Link>
+        </Tooltip>
       </CardActions>
     )
   }
@@ -351,7 +424,18 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
 
 PrivateSensor.propTypes = {
   classes: PropTypes.object.isRequired,
-  videoSetting: PropTypes.object,
+  videoSetting: PropTypes.shape({
+    rect: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      width: PropTypes.number,
+      height: PropTypes.number
+    }),
+    video: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number
+    })
+  }),
   data: PropTypes.object,
   record: PropTypes.object
 }

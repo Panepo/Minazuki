@@ -7,8 +7,11 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
+import IconDelete from '@material-ui/icons/Delete'
+import IconCancel from '@material-ui/icons/Cancel'
 
 const styles = (theme: Object) => ({})
 
@@ -41,14 +44,22 @@ const DialogDelete = (props: Props) => {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleAccept('delete')} color="primary">
-          Accept
-        </Button>
-        <Button
-          onClick={props.toggleDialog('delete', false, '')}
-          color="secondary">
-          Close
-        </Button>
+        <Tooltip title="Delete file">
+          <IconButton
+            className={props.classes.icon}
+            onClick={props.handleAccept('delete')}
+            color="primary">
+            <IconDelete />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Cancel">
+          <IconButton
+            className={props.classes.icon}
+            onClick={props.toggleDialog('delete', false, '')}
+            color="secondary">
+            <IconCancel />
+          </IconButton>
+        </Tooltip>
       </DialogActions>
     </Dialog>
   )

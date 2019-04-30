@@ -23,10 +23,17 @@ import { withStyles } from '@material-ui/core'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
+
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
+import IconCamera from '@material-ui/icons/Camera'
+import IconAccept from '@material-ui/icons/Done'
+import IconCancel from '@material-ui/icons/Cancel'
+import IconSensor from '@material-ui/icons/Contacts'
+import IconList from '@material-ui/icons/AssignmentInd'
 
 const imageSetting = require('../../images/setting.jpg')
 
@@ -125,7 +132,7 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
     this.props.actionsI.infoSet({
       onoff: true,
       variant: 'info',
-      message: 'Config set'
+      message: 'Configuration set'
     })
   }
 
@@ -204,33 +211,61 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
 
   renderButton = () => {
     const renderToRegister = this.props.auth.user.admin ? (
-      <Link to="/list">
-        <Button color="primary">List</Button>
-      </Link>
+      <Tooltip title="To All Users">
+        <Link to="/list">
+          <IconButton className={this.props.classes.icon} color="primary">
+            <IconList />
+          </IconButton>
+        </Link>
+      </Tooltip>
     ) : null
 
     const renderWebcamPower = this.state.isPlaying ? (
-      <Button color="secondary" onClick={this.handleWebcam}>
-        Webcam Stop
-      </Button>
+      <Tooltip title="Webcam stop">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="secondary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     ) : (
-      <Button color="primary" onClick={this.handleWebcam}>
-        Webcam Start
-      </Button>
+      <Tooltip title="Webcam start">
+        <IconButton
+          className={this.props.classes.icon}
+          onClick={this.handleWebcam}
+          color="primary">
+          <IconCamera />
+        </IconButton>
+      </Tooltip>
     )
 
     return (
       <div>
         {renderWebcamPower}
-        <Button color="primary" onClick={this.handleAccept}>
-          Accept
-        </Button>
-        <Button color="primary" onClick={this.handleCancel}>
-          Cancel
-        </Button>
-        <Link to="/sensor">
-          <Button color="primary">Sensor</Button>
-        </Link>
+        <Tooltip title="Set configuration">
+          <IconButton
+            className={this.props.classes.icon}
+            onClick={this.handleAccept}
+            color="primary">
+            <IconAccept />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Cancel">
+          <IconButton
+            className={this.props.classes.icon}
+            onClick={this.handleCancel}
+            color="primary">
+            <IconCancel />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="To face recognize sensor">
+          <Link to="/sensor">
+            <IconButton className={this.props.classes.icon} color="primary">
+              <IconSensor />
+            </IconButton>
+          </Link>
+        </Tooltip>
         {renderToRegister}
       </div>
     )

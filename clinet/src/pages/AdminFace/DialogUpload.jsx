@@ -13,7 +13,11 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Button from '@material-ui/core/Button'
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
+import IconAdd from '@material-ui/icons/AddPhotoAlternate'
+import IconUpload from '@material-ui/icons/CloudUpload'
+import IconCancel from '@material-ui/icons/Cancel'
 
 const styles = (theme: Object) => ({
   hidden: {
@@ -113,28 +117,41 @@ class DialogUpload extends React.Component<ProvidedProps & Props, State> {
           />
         </DialogContent>
         <DialogActions>
-          <Button color="primary" component="label">
-            Select Image
-            <input
-              className={this.props.classes.hidden}
-              type="file"
-              name="fileUpload"
-              accept="image/*"
-              onChange={this.handleUpload}
-              required
-              multiple
-            />
-          </Button>
+          <Tooltip title="Select Image">
+            <IconButton
+              className={this.props.classes.icon}
+              component="label"
+              color="primary">
+              <input
+                className={this.props.classes.hidden}
+                type="file"
+                name="fileUpload"
+                accept="image/*"
+                onChange={this.handleUpload}
+                required
+                multiple
+              />
+              <IconAdd />
+            </IconButton>
+          </Tooltip>
           {this.state.imageFile.length > 0 ? (
-            <Button onClick={this.handleAccept} color="primary">
-              Upload
-            </Button>
+            <Tooltip title="Upload Image">
+              <IconButton
+                className={this.props.classes.icon}
+                onClick={this.handleAccept}
+                color="primary">
+                <IconUpload />
+              </IconButton>
+            </Tooltip>
           ) : null}
-          <Button
-            onClick={this.props.toggleDialog('upload', false, '')}
-            color="secondary">
-            Close
-          </Button>
+          <Tooltip title="Close">
+            <IconButton
+              className={this.props.classes.icon}
+              onClick={this.props.toggleDialog('upload', false, '')}
+              color="secondary">
+              <IconCancel />
+            </IconButton>
+          </Tooltip>
         </DialogActions>
       </Dialog>
     )

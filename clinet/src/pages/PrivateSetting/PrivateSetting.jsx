@@ -38,10 +38,6 @@ const styles = (theme: Object) => ({
   divider: {
     marginTop: '10px',
     marginBottom: '10px'
-  },
-  overlay: {
-    zIndex: 10,
-    marginTop: '-370px'
   }
 })
 
@@ -207,35 +203,25 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
   // ================================================================================
 
   renderButton = () => {
-    const renderToRegister = () => {
-      if (this.props.auth.user.admin) {
-        return (
-          <Link to="/list">
-            <Button color="primary">List</Button>
-          </Link>
-        )
-      }
-    }
+    const renderToRegister = this.props.auth.user.admin ? (
+      <Link to="/list">
+        <Button color="primary">List</Button>
+      </Link>
+    ) : null
 
-    const renderWebcamPower = (onoff: boolean) => {
-      if (onoff) {
-        return (
-          <Button color="secondary" onClick={this.handleWebcam}>
-            Webcam Stop
-          </Button>
-        )
-      } else {
-        return (
-          <Button color="primary" onClick={this.handleWebcam}>
-            Webcam Start
-          </Button>
-        )
-      }
-    }
+    const renderWebcamPower = this.state.isPlaying ? (
+      <Button color="secondary" onClick={this.handleWebcam}>
+        Webcam Stop
+      </Button>
+    ) : (
+      <Button color="primary" onClick={this.handleWebcam}>
+        Webcam Start
+      </Button>
+    )
 
     return (
       <div>
-        {renderWebcamPower(this.state.isPlaying)}
+        {renderWebcamPower}
         <Button color="primary" onClick={this.handleAccept}>
           Accept
         </Button>
@@ -245,7 +231,7 @@ class PrivateSetting extends React.Component<ProvidedProps & Props, State> {
         <Link to="/sensor">
           <Button color="primary">Sensor</Button>
         </Link>
-        {renderToRegister()}
+        {renderToRegister}
       </div>
     )
   }

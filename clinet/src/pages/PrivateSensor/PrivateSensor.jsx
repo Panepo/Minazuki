@@ -14,6 +14,9 @@ import type { StateRecord } from '../../models/modelRecord'
 import type { StateSetting } from '../../models/modelSetting'
 
 import * as faceapi from 'face-api.js'
+import { createFaceMatcher } from '../../helpers/faceMatch.helper'
+import { resizeCanvasAndResults, drawFPS } from '../../helpers/faceImage.helper'
+
 import Layout from '../Layout'
 import { Link } from 'react-router-dom'
 import WebcamCrop from '../../componments/WebcamCrop'
@@ -24,6 +27,8 @@ import CardActions from '@material-ui/core/CardActions'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import Divider from '@material-ui/core/Divider'
+import Grid from '@material-ui/core/Grid'
 
 const imageSensor = require('../../images/sensor.jpg')
 const imageBlack = require('../../images/black.png')
@@ -91,6 +96,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     detectSize: 160
   }
   interval: number = 0
+  faceMatcher = null
 
   componentDidMount = async () => {
     if (this.props.data.data.length === 0) {
@@ -110,7 +116,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     await faceapi.loadTinyFaceDetectorModel('/models')
     await faceapi.loadFaceLandmarkTinyModel('/models')
     await faceapi.loadFaceRecognitionModel('/models')
-    const initial = document.getElementById('initial_black')
+    /* const initial = document.getElementById('initial_black')
     await faceapi
       .detectAllFaces(
         initial,
@@ -120,9 +126,13 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         })
       )
       .withFaceLandmarks(true)
-      .withFaceDescriptors()
+      .withFaceDescriptors() */
 
     this.setState({ isLoading: false })
+  }
+
+  componentWillUnmount() {
+    window.clearInterval(this.interval)
   }
 
   // ================================================================================
@@ -141,7 +151,83 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     }
   }
 
-  handleSense = () => {}
+  handleSense = async () => {
+    if (this.state.isSensing) {
+      window.clearInterval(this.interval)
+      const canvas = document.getElementById('sensor_webcamcrop_overlay')
+      if (canvas instanceof HTMLCanvasElement) {
+        const ctx = canvas.getContext('2d')
+        ctx.clearRect(
+          0,
+          0,
+          this.props.videoSetting.rect.width * 2,
+          this.props.videoSetting.rect.height * 2
+        )
+      }
+      this.setState({
+        isSensing: false
+      })
+    } else {
+      this.faceMatcher = await createFaceMatcher(this.props.data.data)
+      this.interval = await window.setInterval(() => this.faceMain(), 1000)
+      this.setState({
+        isSensing: true
+      })
+    }
+  }
+
+  // ================================================================================
+  // Facec recognition functions
+  // ================================================================================
+  faceMain = async () => {
+    const image = document.getElementById('sensor_webcamcrop')
+    const canvas = document.getElementById('sensor_webcamcrop_overlay')
+    if (
+      canvas instanceof HTMLCanvasElement &&
+      image instanceof HTMLCanvasElement
+    ) {
+      const tstart = performance.now()
+      await this.faceRecognize(canvas, image)
+      const tend = performance.now()
+      const tickProcess = Math.floor(tend - tstart).toString() + ' ms'
+      drawFPS(canvas, tickProcess, 'lime', {
+        x: 10,
+        y: this.props.videoSetting.rect.height * 2 - 10
+      })
+    }
+  }
+
+  faceRecognize = async (
+    canvas: HTMLCanvasElement,
+    image: HTMLCanvasElement
+  ) => {
+    const results = await faceapi
+      .detectAllFaces(
+        image,
+        new faceapi.TinyFaceDetectorOptions({
+          inputSize: this.state.detectSize,
+          scoreThreshold: this.state.detectThreshold / 100
+        })
+      )
+      .withFaceLandmarks(true)
+      .withFaceDescriptors()
+
+    if (results) {
+      const resizedResults = resizeCanvasAndResults(image, canvas, results)
+      const boxesWithText = await Promise.all(
+        resizedResults.map(
+          async ({ detection, descriptor }) =>
+            new faceapi.BoxWithText(
+              detection.box,
+              // $flow-disable-line
+              this.faceMatcher.findBestMatch(descriptor).toString()
+            )
+        )
+      )
+
+      faceapi.drawDetection(canvas, boxesWithText, { boxColor: 'lime' })
+    }
+  }
 
   // ================================================================================
   // React render functions
@@ -235,7 +321,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       <Layout
         helmet={true}
         title={'Sensor | Minazuki'}
-        gridNormal={8}
+        gridNormal={6}
         gridPhone={10}
         content={
           <Card className={this.props.classes.card}>
@@ -243,7 +329,14 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
               <Typography variant="h5" component="h2" gutterBottom>
                 Sensor
               </Typography>
-              {this.renderWebCam()}
+              <Divider className={this.props.classes.divider} />
+              <Grid
+                container={true}
+                className={this.props.classes.grid}
+                justify="center">
+                {this.renderWebCam()}
+              </Grid>
+              <Divider className={this.props.classes.divider} />
             </CardContent>
             {this.renderButton()}
           </Card>
@@ -255,7 +348,9 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
 
 PrivateSensor.propTypes = {
   classes: PropTypes.object.isRequired,
-  videoSetting: PropTypes.object
+  videoSetting: PropTypes.object,
+  data: PropTypes.object,
+  record: PropTypes.object
 }
 
 const mapStateToProps = state => {

@@ -9,6 +9,13 @@ export const dataLoad = () => (dispatch: Dispatch) => {
     .get('data/load')
     .then(res => {
       dispatch({ type: actionData.DATA_LOAD, payload: res.data })
+      dispatch(
+        infoSet({
+          onoff: true,
+          variant: 'success',
+          message: 'Face data loaded'
+        })
+      )
     })
     .catch(err => dispatch(setError(err)))
 }
@@ -24,7 +31,7 @@ export const dataSave = (input: object) => (dispatch: Dispatch) => {
     .catch(err => dispatch(setError(err)))
 }
 
-export const dataImport = (input: object) => {
+export const dataImport = (input: object): Action<Object> => {
   return {
     type: actionData.DATA_IMPORT,
     payload: input
@@ -40,5 +47,12 @@ export const setError = (err: Object): Action<Object> => (
   return {
     type: actionData.PEOPLE_GETERROR,
     payload: err.response.data
+  }
+}
+
+export const dataClear = (): Action<null> => {
+  return {
+    type: actionData.DATA_CLEAR,
+    payload: null
   }
 }

@@ -18,5 +18,8 @@ export const reducerData = createReducer(initialState, {
   },
   [actionData.DATA_GETERROR](state: StateData, action: Action<Object>) {
     return { ...state, errors: action.payload }
+  },
+  [actionData.DATA_CLEAR](state: StateData, action: Action<null>) {
+    return { ...state, data: [] }
   }
 })

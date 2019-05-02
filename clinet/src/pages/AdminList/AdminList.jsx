@@ -98,6 +98,11 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
           this.setState({
             dialog: { ...this.state.dialog, [target]: false }
           })
+          this.props.actionsI.infoSet({
+            onoff: true,
+            variant: 'success',
+            message: 'User created'
+          })
         } else {
           this.props.actionsI.infoSet({
             onoff: true,
@@ -115,6 +120,11 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
           this.setState({
             dialog: { ...this.state.dialog, [target]: false }
           })
+          this.props.actionsI.infoSet({
+            onoff: true,
+            variant: 'success',
+            message: 'User renamed'
+          })
         } else {
           this.props.actionsI.infoSet({
             onoff: true,
@@ -127,6 +137,11 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
         this.props.actionsP.peopleDelete({ name: this.state.dialogKey.delete })
         this.setState({
           dialog: { ...this.state.dialog, [target]: false }
+        })
+        this.props.actionsI.infoSet({
+          onoff: true,
+          variant: 'success',
+          message: 'User deleted'
         })
         break
       default:

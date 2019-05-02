@@ -3,7 +3,8 @@
 import type Action from './modelAction'
 
 export const actionRecord = {
-  RECORD_ADD: 'RECORD_ADD'
+  RECORD_ADD: 'RECORD_ADD',
+  RECORD_CLEAR: 'RECORD_CLEAR'
 }
 
 export type RecordData = {

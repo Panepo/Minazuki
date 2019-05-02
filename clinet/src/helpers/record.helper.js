@@ -1,7 +1,7 @@
 // @flow
 
 import type { RecordData } from '../models/modelRecord'
-import { dbData } from '../reducers/reducerRecord'
+import { dbData } from '../database'
 
 export function validateRepeat(input: RecordData) {
   const date = Date.now()

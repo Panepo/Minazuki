@@ -78,6 +78,11 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
         this.setState({
           dialog: { ...this.state.dialog, [target]: false }
         })
+        this.props.actionsI.infoSet({
+          onoff: true,
+          variant: 'success',
+          message: 'Image deleted'
+        })
         break
       default:
         break

@@ -15,7 +15,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
-
+import Typography from '@material-ui/core/Typography'
 import MucTableHead from '../../componments/MucTableHead'
 import { tableHead } from './TableHead'
 import { stableSort, getSorting } from '../../helpers/table.helper'
@@ -53,12 +53,12 @@ type State = {
 
 class PrivateRecord extends React.Component<ProvidedProps & Props, State> {
   state = {
-    order: 'asc',
+    order: 'desc',
     orderBy: 'date',
     selected: [],
     data: this.props.record.data,
     page: 0,
-    rowsPerPage: 5
+    rowsPerPage: 10
   }
 
   static getDerivedStateFromProps(nextProps: ProvidedProps & Props) {
@@ -162,10 +162,18 @@ class PrivateRecord extends React.Component<ProvidedProps & Props, State> {
                             />
                           </TableCell>
                           <TableCell align="left" padding="dense">
-                            {n.name}
+                            <img
+                              src={n.photo}
+                              alt={n.name}
+                              width={30}
+                              height={30}
+                            />
                           </TableCell>
                           <TableCell align="left" padding="dense">
-                            {dateTransform(n.date)}
+                            <Typography>{n.name}</Typography>
+                          </TableCell>
+                          <TableCell align="left" padding="dense">
+                            <Typography>{dateTransform(n.date)}</Typography>
                           </TableCell>
                         </TableRow>
                       )

@@ -18,7 +18,7 @@ const persistConfig: PersistConfig = {
   key: 'root',
   version: 1,
   storage: localforage,
-  blacklist: ['reducerAuth', 'reducerInfo']
+  blacklist: ['reducerAuth', 'reducerInfo', 'reducerRecord']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer(history))

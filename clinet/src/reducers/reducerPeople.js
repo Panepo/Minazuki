@@ -16,7 +16,7 @@ export const reducerPeople = createReducer(initialState, {
     action: Action<PeopleData[]>
   ) {
     dbPeople.removeDataOnly()
-    action.payload.peoples.map(people => dbPeople.insert(people))
+    action.payload.map(people => dbPeople.insert(people))
     return { ...state, peoples: action.payload }
   },
   [actionPeople.PEOPLE_GETERROR](state: StatePeople, action: Action<Object>) {

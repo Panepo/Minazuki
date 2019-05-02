@@ -8,7 +8,7 @@ import type { Dispatch } from '../../models'
 import * as actionInfo from '../../actions/actionInfo'
 import * as actionData from '../../actions/actionData'
 import * as actionRecord from '../../actions/actionRecord'
-
+import * as actionPeople from '../../actions/actionPeople'
 import type { StateData } from '../../models/modelData'
 import type { StateRecord, RecordData } from '../../models/modelRecord'
 import type { StateSetting } from '../../models/modelSetting'
@@ -81,7 +81,8 @@ type Props = {
   videoSetting: StateSetting,
   actionsI: Dispatch,
   actionsD: Dispatch,
-  actionsR: Dispatch
+  actionsR: Dispatch,
+  actionsP: Dispatch
 }
 
 type State = {
@@ -122,6 +123,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         message: 'Face data loaded from clinet training.'
       })
     }
+    await this.props.actionsP.peopleGetAll()
     await faceapi.loadTinyFaceDetectorModel('/models')
     await faceapi.loadFaceLandmarkTinyModel('/models')
     await faceapi.loadFaceRecognitionModel('/models')
@@ -457,7 +459,8 @@ const mapDispatchToProps = dispatch => {
   return {
     actionsR: bindActionCreators(actionRecord, dispatch),
     actionsI: bindActionCreators(actionInfo, dispatch),
-    actionsD: bindActionCreators(actionData, dispatch)
+    actionsD: bindActionCreators(actionData, dispatch),
+    actionsP: bindActionCreators(actionPeople, dispatch)
   }
 }
 

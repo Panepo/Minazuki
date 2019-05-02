@@ -27,7 +27,7 @@ const Footer = (props: Props) => {
   return (
     <footer className={props.classes.root}>
       <Typography className={props.classes.text}>
-        Copyright &copy; Panepo@Github 2018 All Rights Reserved.
+        Copyright &copy; Panepo@Github 2019 All Rights Reserved.
       </Typography>
     </footer>
   )

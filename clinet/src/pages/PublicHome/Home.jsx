@@ -69,10 +69,6 @@ const Home = (props: Props) => {
             <Typography variant="h5" component="h2" gutterBottom>
               Minazuki
             </Typography>
-            <Typography component="p">
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
-            </Typography>
           </CardContent>
           <CardActions>
             {renderSignin}

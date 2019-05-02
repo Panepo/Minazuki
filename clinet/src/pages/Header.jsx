@@ -178,7 +178,7 @@ class Header extends React.Component<ProvidedProps & Props, State> {
               Minazuki
             </Typography>
             {this.renderAvatar()}
-            {renderLink}
+            {this.props.auth.isAuthenticated ? renderLink : null}
           </Toolbar>
         </AppBar>
       </header>

@@ -6,7 +6,9 @@ import type { StateRecord, RecordData } from '../models/modelRecord'
 import { validateRepeat } from '../helpers/record.helper'
 import * as Lokijs from 'lokijs'
 
+// $flow-disable-line
 const db = new Lokijs('db')
+// $flow-disable-line
 export const dbData: Collection<RecordData> = db.addCollection('data')
 
 const initialState: StateRecord = {

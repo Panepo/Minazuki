@@ -79,9 +79,9 @@ type Props = {
   data: StateData,
   record: StateRecord,
   videoSetting: StateSetting,
-  actionsP: Dispatch,
   actionsI: Dispatch,
-  actionsD: Dispatch
+  actionsD: Dispatch,
+  actionsR: Dispatch
 }
 
 type State = {

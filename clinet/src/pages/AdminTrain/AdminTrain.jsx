@@ -30,8 +30,8 @@ import IconSensor from '@material-ui/icons/Contacts'
 import IconList from '@material-ui/icons/AssignmentInd'
 import IconSave from '@material-ui/icons/Save'
 import IconLoad from '@material-ui/icons/HowToVote'
-import IconImport from '@material-ui/icons/Archive'
-import IconExport from '@material-ui/icons/Unarchive'
+import IconExport from '@material-ui/icons/Archive'
+import IconImport from '@material-ui/icons/Unarchive'
 import IconTrain from '@material-ui/icons/Polymer'
 import IconClear from '@material-ui/icons/HighlightOff'
 
@@ -64,7 +64,7 @@ type State = {
   isLoading: boolean,
   isBusy: boolean,
   list: any,
-  processTime: string
+  processTime: number
 }
 
 class AdminTrain extends React.Component<ProvidedProps & Props, State> {
@@ -74,7 +74,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
       isLoading: true,
       isBusy: false,
       list: extractImagePath(props.peoples),
-      processTime: '0'
+      processTime: 0
     }
   }
 
@@ -167,7 +167,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
     const tend = performance.now()
     this.setState({
       isBusy: false,
-      processTime: Math.floor(tend - tstart).toString() + ' ms'
+      processTime: Math.floor(tend - tstart)
     })
 
     if (labeledDescriptors.length > 0) {
@@ -295,7 +295,12 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               </Tooltip>
             </CardActions>
             <CardContent>
-              <TextField label="Process time" value={this.state.processTime} />
+              {this.state.processTime > 0 ? (
+                <TextField
+                  label="Process time"
+                  value={this.state.processTime.toString() + ' ms'}
+                />
+              ) : null}
               {this.state.isBusy ? (
                 <div>
                   <Typography>Training...</Typography>

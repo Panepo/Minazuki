@@ -105,6 +105,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     detectSize: 160
   }
   interval: number = 0
+  tick: number = 0
   faceMatcher = null
 
   componentDidMount = async () => {
@@ -179,7 +180,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       })
     } else {
       this.faceMatcher = await createFaceMatcher(this.props.data.data)
-      this.interval = await window.setInterval(() => this.faceMain(), 1000)
+      this.interval = window.setInterval(async() => await this.faceMain(), 10)
       this.setState({
         isSensing: true
       })
@@ -208,10 +209,9 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       canvas instanceof HTMLCanvasElement &&
       image instanceof HTMLCanvasElement
     ) {
-      const tstart = performance.now()
       await this.faceRecognize(canvas, image)
       const tend = performance.now()
-      const tickProcess = Math.floor(tend - tstart).toString() + ' ms'
+      const tickProcess = Math.floor(tend - this.tick).toString() + ' ms'
       const anchor = { x: 0, y: this.props.videoSetting.rect.height * 2 }
       const drawOptions = {
         anchorPosition: 'TOP_LEFT',
@@ -224,6 +224,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         drawOptions
       )
       drawBox.draw(canvas)
+      this.tick = tend
     }
   }
 
@@ -245,7 +246,6 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     if (results) {
       faceapi.matchDimensions(canvas, image)
       const resizedResults = faceapi.resizeResults(results, image)
-      faceapi.draw.drawDetections(canvas, resizedResults)
       resizedResults.forEach(({ detection, descriptor }) => {
         // $flow-disable-line
         const label = this.faceMatcher.findBestMatch(descriptor).toString()
@@ -262,6 +262,9 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
           this.props.actionsR.recordAdd(record)
         }
       })
+    } else {
+      const context = canvas.getContext('2d')
+      context.clearRect(0, 0, canvas.width, canvas.height)
     }
   }
 

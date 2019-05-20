@@ -180,7 +180,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       })
     } else {
       this.faceMatcher = await createFaceMatcher(this.props.data.data)
-      this.interval = window.setInterval(async() => await this.faceMain(), 10)
+      this.interval = window.setInterval(async () => await this.faceMain(), 10)
       this.setState({
         isSensing: true
       })

@@ -14,8 +14,7 @@ import type { StateRecord, RecordData } from '../../models/modelRecord'
 import type { StateSetting } from '../../models/modelSetting'
 
 import * as faceapi from 'face-api.js'
-import { createFaceMatcher } from '../../helpers/faceMatch.helper'
-import { resizeCanvasAndResults, drawFPS } from '../../helpers/faceImage.helper'
+import { createFaceMatcher } from '../../helpers/face.helper'
 
 import Layout from '../Layout'
 import { Link } from 'react-router-dom'
@@ -213,10 +212,18 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       await this.faceRecognize(canvas, image)
       const tend = performance.now()
       const tickProcess = Math.floor(tend - tstart).toString() + ' ms'
-      drawFPS(canvas, tickProcess, 'lime', {
-        x: 10,
-        y: this.props.videoSetting.rect.height * 2 - 10
-      })
+      const anchor = { x: 0, y: this.props.videoSetting.rect.height * 2 }
+      const drawOptions = {
+        anchorPosition: 'TOP_LEFT',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        fontColor: 'yellow'
+      }
+      const drawBox = new faceapi.draw.DrawTextField(
+        tickProcess,
+        anchor,
+        drawOptions
+      )
+      drawBox.draw(canvas)
     }
   }
 
@@ -236,26 +243,24 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       .withFaceDescriptors()
 
     if (results) {
-      const resizedResults = resizeCanvasAndResults(image, canvas, results)
-      const boxesWithText = await Promise.all(
-        resizedResults.map(async ({ detection, descriptor }) => {
-          // $flow-disable-line
-          const match = this.faceMatcher.findBestMatch(descriptor).toString()
-          const matchSplit = match.split(' ')
+      faceapi.matchDimensions(canvas, image)
+      const resizedResults = faceapi.resizeResults(results, image)
+      faceapi.draw.drawDetections(canvas, resizedResults)
+      resizedResults.forEach(({ detection, descriptor }) => {
+        // $flow-disable-line
+        const label = this.faceMatcher.findBestMatch(descriptor).toString()
+        const options = { label }
+        const drawBox = new faceapi.draw.DrawBox(detection.box, options)
+        drawBox.draw(canvas)
 
+        if (this.state.isRecording) {
+          const labelSplit = label.split(' ')
           const record: RecordData = {
-            name: matchSplit[0],
+            name: labelSplit[0],
             date: Date.now()
           }
-          if (this.state.isRecording) this.props.actionsR.recordAdd(record)
-
-          return new faceapi.BoxWithText(detection.box, match)
-        })
-      )
-
-      faceapi.drawDetection(canvas, boxesWithText, {
-        boxColor: 'yellow',
-        textColor: 'lime'
+          this.props.actionsR.recordAdd(record)
+        }
       })
     }
   }

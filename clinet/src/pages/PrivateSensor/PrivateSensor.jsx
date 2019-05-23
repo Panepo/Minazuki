@@ -12,10 +12,9 @@ import * as actionPeople from '../../actions/actionPeople'
 import type { StateData } from '../../models/modelData'
 import type { StateRecord, RecordData } from '../../models/modelRecord'
 import type { StateSetting } from '../../models/modelSetting'
-
 import * as faceapi from 'face-api.js'
 import { createFaceMatcher } from '../../helpers/face.helper'
-
+import { environment } from '../../environment'
 import Layout from '../Layout'
 import { Link } from 'react-router-dom'
 import WebcamCrop from '../../componments/WebcamCrop'
@@ -27,7 +26,6 @@ import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
-
 import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
 import IconCamera from '@material-ui/icons/Camera'
@@ -89,9 +87,7 @@ type State = {
   isPlaying: boolean,
   isSensing: boolean,
   isRecording: boolean,
-  processTime: string,
-  detectThreshold: number,
-  detectSize: number
+  processTime: string
 }
 
 class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
@@ -100,9 +96,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     isPlaying: false,
     isSensing: false,
     isRecording: false,
-    processTime: '0',
-    detectThreshold: 50,
-    detectSize: 160
+    processTime: '0'
   }
   interval: number = 0
   tick: number = 0
@@ -124,16 +118,23 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       })
     }
     await this.props.actionsP.peopleGetAll()
-    await faceapi.loadTinyFaceDetectorModel('/models')
-    await faceapi.loadFaceLandmarkTinyModel('/models')
-    await faceapi.loadFaceRecognitionModel('/models')
+    const dev = process.env.NODE_ENV === 'development'
+    if (dev) {
+      await faceapi.loadTinyFaceDetectorModel(environment.urlDev + 'models')
+      await faceapi.loadFaceLandmarkTinyModel(environment.urlDev + 'models')
+      await faceapi.loadFaceRecognitionModel(environment.urlDev + 'models')
+    } else {
+      await faceapi.loadTinyFaceDetectorModel(environment.urlProd + 'models')
+      await faceapi.loadFaceLandmarkTinyModel(environment.urlProd + 'models')
+      await faceapi.loadFaceRecognitionModel(environment.urlProd + 'models')
+    }
     const initial = document.getElementById('initial_black')
     await faceapi
       .detectAllFaces(
         initial,
         new faceapi.TinyFaceDetectorOptions({
-          inputSize: this.state.detectSize,
-          scoreThreshold: this.state.detectThreshold / 100
+          inputSize: environment.tinyInputSize,
+          scoreThreshold: environment.tinyThreshold
         })
       )
       .withFaceLandmarks(true)
@@ -236,8 +237,8 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       .detectAllFaces(
         image,
         new faceapi.TinyFaceDetectorOptions({
-          inputSize: this.state.detectSize,
-          scoreThreshold: this.state.detectThreshold / 100
+          inputSize: environment.tinyInputSize,
+          scoreThreshold: environment.tinyThreshold
         })
       )
       .withFaceLandmarks(true)
@@ -391,7 +392,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       return (
         <Layout
           helmet={true}
-          title={'Sensor | Minazuki'}
+          title={'Sensor'}
           content={
             <Card className={this.props.classes.paper}>
               <Typography>Loading...</Typography>
@@ -411,7 +412,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
     return (
       <Layout
         helmet={true}
-        title={'Sensor | Minazuki'}
+        title={'Sensor'}
         gridNormal={6}
         gridPhone={10}
         content={

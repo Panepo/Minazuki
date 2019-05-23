@@ -103,7 +103,7 @@ class AdminFace extends React.Component<ProvidedProps & Props, State> {
   render() {
     return (
       <Layout
-        title={this.props.match.params.user + ' | Minazuki'}
+        title={this.props.match.params.user}
         gridNormal={10}
         gridPhone={12}
         content={

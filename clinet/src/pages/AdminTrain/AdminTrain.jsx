@@ -11,6 +11,7 @@ import * as actionData from '../../actions/actionData'
 import type { PeopleData } from '../../models/modelPeople'
 import type { StateData } from '../../models/modelData'
 import * as faceapi from 'face-api.js'
+import { environment } from '../../environment'
 import Layout from '../Layout'
 import Loading from '../Loading'
 import { Link } from 'react-router-dom'
@@ -80,9 +81,16 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
 
   componentDidMount = async () => {
     await this.props.actionsP.peopleGetAll()
-    await faceapi.loadTinyFaceDetectorModel('/models')
-    await faceapi.loadFaceLandmarkTinyModel('/models')
-    await faceapi.loadFaceRecognitionModel('/models')
+    const dev = process.env.NODE_ENV === 'development'
+    if (dev) {
+      await faceapi.loadTinyFaceDetectorModel(environment.urlDev + 'models')
+      await faceapi.loadFaceLandmarkTinyModel(environment.urlDev + 'models')
+      await faceapi.loadFaceRecognitionModel(environment.urlDev + 'models')
+    } else {
+      await faceapi.loadTinyFaceDetectorModel(environment.urlProd + 'models')
+      await faceapi.loadFaceLandmarkTinyModel(environment.urlProd + 'models')
+      await faceapi.loadFaceRecognitionModel(environment.urlProd + 'models')
+    }
     this.setState({ isLoading: false })
   }
 
@@ -192,13 +200,13 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
 
   render() {
     if (this.state.isLoading) {
-      return <Loading helmet={true} title={'Face Training | Minazuki'} />
+      return <Loading helmet={true} title={'Face Training'} />
     }
 
     return (
       <Layout
         helmet={true}
-        title={'Face Training | Minazuki'}
+        title={'Face Training'}
         gridNormal={8}
         gridPhone={10}
         content={

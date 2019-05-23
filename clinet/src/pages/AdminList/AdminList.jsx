@@ -180,7 +180,7 @@ class AdminList extends React.Component<ProvidedProps & Props, State> {
     return (
       <Layout
         helmet={true}
-        title={'Face List | Minazuki'}
+        title={'Face List'}
         gridNormal={10}
         gridPhone={12}
         content={

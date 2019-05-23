@@ -128,7 +128,7 @@ class Signin extends React.Component<ProvidedProps & Props, State> {
     return (
       <Layout
         helmet={true}
-        title={'Signin | Minazuki'}
+        title={'Signin'}
         content={
           <Card className={this.props.classes.card}>
             <CardActionArea>

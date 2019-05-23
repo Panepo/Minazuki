@@ -3,12 +3,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
+import { environment } from '../environment'
 
 const styles = (theme: Object) => ({
   root: {
     width: '100%',
     height: '60vh',
-    background: 'linear-gradient(165deg, #0066ff 20%, #99ccff 90%)'
+    background: environment.ColorRibbon
   }
 })
 

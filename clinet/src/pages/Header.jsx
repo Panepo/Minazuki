@@ -25,6 +25,7 @@ import green from '@material-ui/core/colors/green'
 import blue from '@material-ui/core/colors/blue'
 import { linkDrawer, linkHeader } from '../constants/constLink'
 import type { LinkSite } from '../models/modelMisc'
+import { environment } from '../environment'
 
 const styles = (theme: Object) => ({
   root: {},
@@ -46,7 +47,7 @@ const styles = (theme: Object) => ({
     flexGrow: 1
   },
   menuButton: {
-    color: '#0066ff',
+    color: environment.ColorMenuIcon,
     marginLeft: -12,
     marginRight: 20
   },
@@ -175,7 +176,7 @@ class Header extends React.Component<ProvidedProps & Props, State> {
               color="inherit"
               className={classes.grow}
               noWrap>
-              Minazuki
+              {environment.title}
             </Typography>
             {this.renderAvatar()}
             {this.props.auth.isAuthenticated ? renderLink : null}

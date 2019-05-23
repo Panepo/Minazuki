@@ -124,7 +124,7 @@ class PrivateRecord extends React.Component<ProvidedProps & Props, State> {
     return (
       <Layout
         helmet={true}
-        title={'Record | Minazuki'}
+        title={'Record'}
         gridNormal={6}
         gridPhone={10}
         content={

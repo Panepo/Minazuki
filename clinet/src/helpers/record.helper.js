@@ -2,6 +2,7 @@
 
 import type { RecordData } from '../models/modelRecord'
 import { dbData } from '../database'
+import { environment } from '../environment'
 
 export function validateRepeat(input: RecordData) {
   const date = Date.now()
@@ -11,7 +12,7 @@ export function validateRepeat(input: RecordData) {
       $and: [
         { name: input.name },
         {
-          date: { $gt: date - 60000 } // 1 min
+          date: { $gt: date - environment.recordRepeatTime } // 1 min
         }
       ]
     })

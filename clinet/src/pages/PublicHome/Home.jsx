@@ -59,7 +59,7 @@ const Home = (props: Props) => {
   return (
     <Layout
       helmet={true}
-      title={'Home | Minazuki'}
+      title={'Home'}
       content={
         <Card className={props.classes.card}>
           <CardActionArea>

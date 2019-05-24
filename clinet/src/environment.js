@@ -3,8 +3,7 @@ class EnvironmentValues {
   urlDev = '/'
   urlProd = '/'
   ColorMenuIcon = '#3d5afe'
-  ColorRibbon =
-    'radial-gradient(farthest-side at 80% 100%, #00e676, #18ffff, #00b0ff, #3d5afe)'
+  ColorRibbon = 'linear-gradient(165deg, #3d5afe, #00b0ff, #18ffff, #00e676)'
 
   // Video options
   videoCanvas = {

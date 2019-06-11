@@ -68,7 +68,7 @@ type State = {
   processTime: number
 }
 
-class AdminTrain extends React.Component<ProvidedProps & Props, State> {
+class AdminLearn extends React.Component<ProvidedProps & Props, State> {
   constructor(props: ProvidedProps & Props) {
     super(props)
     this.state = {
@@ -183,13 +183,13 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
       this.props.actionsI.infoSet({
         onoff: true,
         variant: 'success',
-        message: 'Training success'
+        message: 'Learning success'
       })
     } else {
       this.props.actionsI.infoSet({
         onoff: true,
         variant: 'error',
-        message: 'Training failed'
+        message: 'Learning failed'
       })
     }
   }
@@ -200,20 +200,20 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
 
   render() {
     if (this.state.isLoading) {
-      return <Loading helmet={true} title={'Face Training'} />
+      return <Loading helmet={true} title={'Face Learning'} />
     }
 
     return (
       <Layout
         helmet={true}
-        title={'Face Training'}
+        title={'Face Learning'}
         gridNormal={8}
         gridPhone={10}
         content={
           <Card className={this.props.classes.card}>
             <CardContent>
               <Typography variant="h5" component="h2" gutterBottom>
-                Face Training
+                Face Learning
               </Typography>
               <ImageGridList
                 className={this.props.classes.imageList}
@@ -223,7 +223,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               />
             </CardContent>
             <CardActions>
-              <Tooltip title="Training to get face data">
+              <Tooltip title="Learning to get face data">
                 <IconButton
                   className={this.props.classes.icon}
                   color="primary"
@@ -311,7 +311,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
               ) : null}
               {this.state.isBusy ? (
                 <div>
-                  <Typography>Training...</Typography>
+                  <Typography>Learning...</Typography>
                   <LinearProgress />
                 </div>
               ) : null}
@@ -323,7 +323,7 @@ class AdminTrain extends React.Component<ProvidedProps & Props, State> {
   }
 }
 
-AdminTrain.propTypes = {
+AdminLearn.propTypes = {
   classes: PropTypes.object.isRequired,
   peoples: PropTypes.array.isRequired
 }
@@ -346,4 +346,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(AdminTrain))
+)(withStyles(styles)(AdminLearn))

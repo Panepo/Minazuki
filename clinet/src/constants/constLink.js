@@ -8,7 +8,7 @@ export const linkHeader: LinkSite[] = [
   { text: 'Setting', link: '/setting' },
   { text: 'Record', link: '/record' },
   { text: 'List', link: '/list' },
-  { text: 'Train', link: '/train' }
+  { text: 'Learn', link: '/learn' }
 ]
 
 export const linkDrawer: LinkSite[] = [

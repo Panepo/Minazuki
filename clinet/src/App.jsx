@@ -24,7 +24,7 @@ import Setting from './pages/PrivateSetting/PrivateSetting'
 import Record from './pages/PrivateRecord/PrivateRecord'
 import List from './pages/AdminList/AdminList'
 import Face from './pages/AdminFace/AdminFace'
-import Train from './pages/AdminTrain/AdminTrain'
+import Learn from './pages/AdminLearn/AdminLearn'
 
 const styles = (theme: Object) => ({
   root: {
@@ -51,7 +51,7 @@ const routes = () => {
       <PrivateRoute exact={true} path="/record" component={Record} />
       <AdminRoute exact={true} path="/list" component={List} />
       <AdminRoute exact={true} path="/list/:user" component={Face} />
-      <AdminRoute exact={true} path="/train" component={Train} />
+      <AdminRoute exact={true} path="/learn" component={Learn} />
       <Route component={NotFound} />
     </Switch>
   )

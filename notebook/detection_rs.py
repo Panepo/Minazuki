@@ -11,8 +11,14 @@ import argparse
 parser = argparse.ArgumentParser(
     description="Face detection demo with OpenCV, dlib and face_recognition libraries."
 )
-parser.add_argument("--skip", type=bool, default=True, help="Toggle of process face detection frame by frame.")
+parser.add_argument(
+    "--skip",
+    type=bool,
+    default=True,
+    help="Toggle of process face detection frame by frame.",
+)
 args = parser.parse_args()
+
 
 def detectDevice():
     deviceDetect = False
@@ -131,6 +137,7 @@ def main():
         # Stop streaming
         cv.destroyAllWindows()
         pipeline.stop()
+
 
 if __name__ == "__main__":
     main()

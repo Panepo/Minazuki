@@ -208,3 +208,4 @@ clinet/flow-typed/npm/
 
 /notebook/*.jpg
 /notebook/*.png
+/notebook/*.pickle

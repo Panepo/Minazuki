@@ -14,8 +14,14 @@ parser.add_argument(
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
 )
 parser.add_argument("--save", type=bool, help="Toggle of save the generated image.")
-parser.add_argument("--skip", type=bool, default=True, help="Toggle of process face detection frame by frame.")
+parser.add_argument(
+    "--skip",
+    type=bool,
+    default=True,
+    help="Toggle of process face detection frame by frame.",
+)
 args = parser.parse_args()
+
 
 def main():
     # Initialize some variables
@@ -73,12 +79,15 @@ def main():
 
         # Save results
         if args.save:
-            fileName = "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + '.png'
+            fileName = (
+                "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
+            )
             cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
 
     # Release handle to the webcam
     cap.release()
     cv.destroyAllWindows()
+
 
 if __name__ == "__main__":
     main()

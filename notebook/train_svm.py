@@ -11,9 +11,13 @@ parser.add_argument(
     "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
-    "--svm", type=str, default="face_svm.pickle", help="path to output pickle of svm model"
+    "--svm",
+    type=str,
+    default="face_svm.pickle",
+    help="path to output pickle of svm model",
 )
 args = parser.parse_args()
+
 
 def main():
     # load learned faces
@@ -24,13 +28,13 @@ def main():
 
     # Create and train the SVC classifier
     print("[INFO] training svm classifier ...")
-    clf = svm.SVC(gamma='scale')
+    clf = svm.SVC(gamma="scale")
     clf.fit(data["embeddings"], data["names"])
 
-    with open(args.svm, 'wb') as f:
-      f.write(pickle.dumps(clf))
-      f.close()
-      print("[INFO] svm classifier model {} saved".format(args.svm))
+    with open(args.svm, "wb") as f:
+        f.write(pickle.dumps(clf))
+        f.close()
+        print("[INFO] svm classifier model {} saved".format(args.svm))
 
 
 if __name__ == "__main__":

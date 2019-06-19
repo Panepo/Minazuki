@@ -6,6 +6,7 @@ import argparse
 import time
 import face_recognition
 import pickle
+from sklearn import svm
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -16,7 +17,7 @@ parser.add_argument(
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
 )
 parser.add_argument(
-    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
+    "--svm", type=str, default="face_svm.pickle", help="path to svm model"
 )
 parser.add_argument("--save", type=bool, help="Toggle of save the generated image.")
 parser.add_argument(
@@ -32,18 +33,17 @@ args = parser.parse_args()
 
 
 def main():
-    # load learned faces
-    print("[INFO] loading faces ...")
-    # check the image source comes from
-    print("[INFO] faces loaded from {} ...".format(args.pickle))
-    data = pickle.loads(open(args.pickle, "rb").read())
+    # load svm model
+    print("[INFO] loading SVM model ...")
+    print("[INFO] SVM model from {} ...".format(args.svm))
+    clf = pickle.loads(open(args.svm, "rb").read())
 
     # Initialize some variables
     face_locations = []
     process_this_frame = True
 
     # Create a new named window
-    kWinName = "Face recognition demo"
+    kWinName = "Face recognition demo with SVM classifier"
 
     # Open a video file or an image file or a camera stream
     cap = cv.VideoCapture(args.input if args.input else 0)
@@ -75,26 +75,10 @@ def main():
 
                 face_names = []
                 for face_encoding in face_encodings:
-                    # See if the face is a match for the known face(s)
-                    matches = face_recognition.compare_faces(
-                        data["embeddings"], face_encoding
-                    )
-                    name = "Unknown"
+                    # predict face by SVM
+                    name = clf.predict([face_encoding])
+                    face_names.append(name[0])
 
-                    # # If a match was found in known_face_encodings, just use the first one.
-                    # if True in matches:
-                    #     first_match_index = matches.index(True)
-                    #     name = known_face_names[first_match_index]
-
-                    # Or instead, use the known face with the smallest distance to the new face
-                    face_distances = face_recognition.face_distance(
-                        data["embeddings"], face_encoding
-                    )
-                    best_match_index = np.argmin(face_distances)
-                    if matches[best_match_index]:
-                        name = data["names"][best_match_index]
-
-                    face_names.append(name)
             process_this_frame = not process_this_frame
         else:
             face_locations = face_recognition.face_locations(rgb_small_frame)
@@ -104,26 +88,9 @@ def main():
 
             face_names = []
             for face_encoding in face_encodings:
-                # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(
-                    data["embeddings"], face_encoding
-                )
-                name = "Unknown"
-
-                # # If a match was found in known_face_encodings, just use the first one.
-                # if True in matches:
-                #     first_match_index = matches.index(True)
-                #     name = known_face_names[first_match_index]
-
-                # Or instead, use the known face with the smallest distance to the new face
-                face_distances = face_recognition.face_distance(
-                    data["embeddings"], face_encoding
-                )
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    name = data["names"][best_match_index]
-
-                face_names.append(name)
+                # predict face by SVM
+                name = clf.predict([face_encoding])
+                face_names.append(name[0])
 
         # Display the results
         for (top, right, bottom, left), name in zip(face_locations, face_names):
@@ -171,7 +138,6 @@ def main():
     # Release handle to the webcam
     cap.release()
     cv.destroyAllWindows()
-
 
 if __name__ == "__main__":
     main()

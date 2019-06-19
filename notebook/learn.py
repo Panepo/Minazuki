@@ -22,6 +22,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+
 def main():
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
@@ -47,10 +48,11 @@ def main():
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": knownEmbeddings, "names": knownNames}
 
-    with open(args.embeddings, 'wb') as f:
-      f.write(pickle.dumps(data))
-      f.close()
-      print("[INFO] face embeddings {} saved".format(args.embeddings))
+    with open(args.embeddings, "wb") as f:
+        f.write(pickle.dumps(data))
+        f.close()
+        print("[INFO] face embeddings {} saved".format(args.embeddings))
+
 
 if __name__ == "__main__":
     main()

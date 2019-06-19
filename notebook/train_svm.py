@@ -26,15 +26,16 @@ def main():
     print("[INFO] faces loaded from {} ...".format(args.pickle))
     data = pickle.loads(open(args.pickle, "rb").read())
 
-    # Create and train the SVC classifier
-    print("[INFO] training svm classifier ...")
+    # create and train the SVM classifier
+    print("[INFO] training SVM classifier ...")
     clf = svm.SVC(gamma="scale")
     clf.fit(data["embeddings"], data["names"])
 
+    # save trained SVM model
     with open(args.svm, "wb") as f:
         f.write(pickle.dumps(clf))
         f.close()
-        print("[INFO] svm classifier model {} saved".format(args.svm))
+        print("[INFO] SVM classifier model {} saved".format(args.svm))
 
 
 if __name__ == "__main__":

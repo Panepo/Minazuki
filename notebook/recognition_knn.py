@@ -6,7 +6,7 @@ import argparse
 import time
 import face_recognition
 import pickle
-from sklearn import svm
+from sklearn import neighbors
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -17,7 +17,10 @@ parser.add_argument(
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
 )
 parser.add_argument(
-    "--svm", type=str, default="face_svm.pickle", help="path to SVM model"
+    "--knn", type=str, default="face_knn.pickle", help="path to KNN model"
+)
+parser.add_argument(
+    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument("--save", type=bool, help="Toggle of save the generated image.")
 parser.add_argument(
@@ -31,19 +34,25 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-
 def main():
+    # load learned faces
+    print("[INFO] loading faces ...")
+    # check the image source comes from
+    print("[INFO] faces loaded from {} ...".format(args.pickle))
+    data = pickle.loads(open(args.pickle, "rb").read())
+
     # load svm model
-    print("[INFO] loading SVM model ...")
-    print("[INFO] SVM model from {} ...".format(args.svm))
-    clf = pickle.loads(open(args.svm, "rb").read())
+    print("[INFO] loading KNN model ...")
+    print("[INFO] KNN model from {} ...".format(args.knn))
+    knn_clf = pickle.loads(open(args.knn, "rb").read())
 
     # Initialize some variables
     face_locations = []
     process_this_frame = True
+    distance_threshold = 0.6
 
     # Create a new named window
-    kWinName = "Face recognition demo with SVM classifier"
+    kWinName = "Face recognition demo with KNN classifier"
 
     # Open a video file or an image file or a camera stream
     cap = cv.VideoCapture(args.input if args.input else 0)
@@ -73,11 +82,15 @@ def main():
                     rgb_small_frame, face_locations
                 )
 
+                closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
                 face_names = []
-                for face_encoding in face_encodings:
-                    # predict face by SVM
-                    name = clf.predict([face_encoding])
-                    face_names.append(name[0])
+                for i in range(len(face_locations)):
+                    if closest_distances[0][i][0] <= distance_threshold:
+                        best_match_index = closest_distances[1][i][0]
+                        name = data["names"][best_match_index]
+                    else:
+                        name = "Unknown"
+                    face_names.append(name)
 
             process_this_frame = not process_this_frame
         else:
@@ -86,11 +99,15 @@ def main():
                 rgb_small_frame, face_locations
             )
 
+            closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
             face_names = []
-            for face_encoding in face_encodings:
-                # predict face by SVM
-                name = clf.predict([face_encoding])
-                face_names.append(name[0])
+            for i in range(len(face_locations)):
+                if closest_distances[0][i][0] <= distance_threshold:
+                    best_match_index = closest_distances[1][i][0]
+                    name = data["names"][best_match_index]
+                else:
+                    name = "Unknown"
+                face_names.append(name)
 
         # Display the results
         for (top, right, bottom, left), name in zip(face_locations, face_names):

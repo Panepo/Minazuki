@@ -20,6 +20,7 @@ parser.add_argument(
     default=True,
     help="Toggle of process face detection frame by frame.",
 )
+parser.add_argument("--info", type=bool, help="Toggle of display information in images.")
 args = parser.parse_args()
 
 
@@ -72,13 +73,15 @@ def main():
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)
-        cv.putText(frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255))
+        print("[INFO] " + label)
+        if args.info:
+            cv.putText(frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255))
 
         # Display the frame
         cv.imshow(kWinName, frame)
 
         # Save results
-        if args.save:
+        if args.save and args.input:
             fileName = (
                 "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
             )

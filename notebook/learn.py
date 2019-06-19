@@ -46,10 +46,11 @@ def main():
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": knownEmbeddings, "names": knownNames}
-    f = open(args.embeddings, "wb")
-    f.write(pickle.dumps(data))
-    f.close()
-    print("[INFO] face embeddings {} saved".format(args.embeddings))
+
+    with open(args.embeddings, 'wb') as f:
+      f.write(pickle.dumps(data))
+      f.close()
+      print("[INFO] face embeddings {} saved".format(args.embeddings))
 
 if __name__ == "__main__":
     main()

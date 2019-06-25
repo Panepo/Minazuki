@@ -4,8 +4,8 @@ import numpy as np
 import math
 import time
 import face_recognition
-import pyrealsense2 as rs
 import argparse
+from utils.realsense import realsense, rsOptions
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -20,31 +20,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def detectDevice():
-    deviceDetect = False
-    ctx = rs.context()
-    devices = ctx.query_devices()
-
-    for dev in devices:
-        productName = str(dev.get_info(rs.camera_info.product_id))
-        # print(productName)
-
-        # DS 435 config
-        if productName in "0B07":
-            deviceDetect = True
-            print("Connect device: RealSense D435")
-            break
-
-        # DS 415 config
-        elif productName in "0AD3":
-            deviceDetect = True
-            print("Connect device: RealSense D415")
-            break
-
-    if deviceDetect is not True:
-        raise Exception("No supported device was found")
-
-
 def main():
     # Initialize some variables
     face_locations = []
@@ -55,11 +30,10 @@ def main():
     kWinName = "Face detection demo"
 
     # Start RealSense Camera
-    detectDevice()
-    pipeline = rs.pipeline()
-    config = rs.config()
-    config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-    pipeline.start(config)
+    options = rsOptions()
+    options.enableColor = True
+    rs = realsense(options)
+    rs.deviceInitial()
 
     try:
         while True:
@@ -67,14 +41,11 @@ def main():
             start_time = time.time()
 
             # Read frame
-            frames = pipeline.wait_for_frames()
-            color_frame = frames.get_color_frame()
-            if not color_frame:
+            rs.getFrame()
+            frame = rs.imageColor
+            if not frame.any():
                 cv.waitKey()
                 break
-
-            # Convert frame to numpy array
-            frame = np.asanyarray(color_frame.get_data())
 
             # Resize frame of video to 1/4 size for faster face recognition processing
             small_frame = cv.resize(frame, (0, 0), fx=0.25, fy=0.25)
@@ -136,8 +107,7 @@ def main():
     finally:
         # Stop streaming
         cv.destroyAllWindows()
-        pipeline.stop()
-
+        rs.pipeline.stop()
 
 if __name__ == "__main__":
     main()

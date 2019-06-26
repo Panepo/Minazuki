@@ -3,6 +3,7 @@ import pickle
 import argparse
 import face_recognition
 import time
+import numpy as np
 from utils.path import list_images, list_images_dirs
 from utils.utilarg import str2bool
 from utils.time import transTime
@@ -22,6 +23,12 @@ parser.add_argument(
     type=str,
     default="face.pickle",
     help="path to output serialized db of facial embeddings",
+)
+parser.add_argument(
+    "--errors",
+    type=str,
+    default="error.txt",
+    help="path to output error face lists.",
 )
 parser.add_argument(
     "--detection",
@@ -50,16 +57,26 @@ def main():
     # initialize the total number of faces processed
     total = 0
 
+    # initialize error lists
+    error = []
+
     for (i, imagePath) in enumerate(imagePaths):
         # extract the person name from the image path
         print("[INFO] processing image {}/{}".format(i + 1, len(imagePaths)))
-        temp_image = face_recognition.load_image_file(imagePath)
+        image = face_recognition.load_image_file(imagePath)
 
         if args.detection is True:
-            temp_face_locations = face_recognition.face_locations(temp_image)
-            temp_face_encoding = face_recognition.face_encodings(temp_image, temp_face_locations)[0]
+            face_locations = face_recognition.face_locations(image)
+            face_encodings = face_recognition.face_encodings(image, face_locations)
         else:
-            temp_face_encoding = face_recognition.face_encodings(temp_image)[0]
+            face_encodings = face_recognition.face_encodings(image)
+
+        if len(face_encodings) > 0:
+            temp_face_encoding = face_encodings[0]
+        else:
+            print("[ERROR] no face found in image {}".format(imagePath))
+            error.append(imagePath)
+            continue
 
         knownEmbeddings.append(temp_face_encoding)
         total += 1
@@ -67,13 +84,21 @@ def main():
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": knownEmbeddings, "names": knownNames}
-
     with open(args.embeddings, "wb") as f:
         f.write(pickle.dumps(data))
         f.close()
         print("[INFO] face embeddings {} saved".format(args.embeddings))
 
-    # Calculate processing time
+    # display error list
+    if len(error) > 0:
+        print("[INFO] total {} error images".format(len(error)))
+        with open(args.errors, "w", encoding='utf-8') as f:
+            for item in error:
+                f.write("%s\n" % item)
+            f.close()
+            print("[INFO] error lists {} saved".format(args.errors))
+
+    # calculate processing time
     tick = ((time.time() - start_time) * 1000)
     transTime(tick, "[INFO] Total process time: ")
 

@@ -1,7 +1,9 @@
 # Import required modules
 import pickle
 import argparse
+import time
 from sklearn import svm
+from utils.time import transTime
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -20,6 +22,9 @@ args = parser.parse_args()
 
 
 def main():
+    # get start time
+    start_time = time.time()
+
     # load learned faces
     print("[INFO] loading faces ...")
     # check the image source comes from
@@ -36,6 +41,10 @@ def main():
         f.write(pickle.dumps(clf))
         f.close()
         print("[INFO] SVM classifier model {} saved".format(args.svm))
+
+    # calculate processing time
+    tick = (time.time() - start_time) * 1000
+    transTime(tick, "[INFO] Total process time: ")
 
 
 if __name__ == "__main__":

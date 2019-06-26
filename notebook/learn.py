@@ -3,7 +3,6 @@ import pickle
 import argparse
 import face_recognition
 import time
-import numpy as np
 from utils.path import list_images, list_images_dirs
 from utils.utilarg import str2bool
 from utils.time import transTime
@@ -25,10 +24,7 @@ parser.add_argument(
     help="path to output serialized db of facial embeddings",
 )
 parser.add_argument(
-    "--errors",
-    type=str,
-    default="error.txt",
-    help="path to output error face lists.",
+    "--errors", type=str, default="error.txt", help="path to output error face lists."
 )
 parser.add_argument(
     "--detection",
@@ -75,6 +71,7 @@ def main():
             temp_face_encoding = face_encodings[0]
         else:
             print("[ERROR] no face found in image {}".format(imagePath))
+            del knownNames[i]
             error.append(imagePath)
             continue
 
@@ -92,15 +89,16 @@ def main():
     # display error list
     if len(error) > 0:
         print("[INFO] total {} error images".format(len(error)))
-        with open(args.errors, "w", encoding='utf-8') as f:
+        with open(args.errors, "w", encoding="utf-8") as f:
             for item in error:
                 f.write("%s\n" % item)
             f.close()
             print("[INFO] error lists {} saved".format(args.errors))
 
     # calculate processing time
-    tick = ((time.time() - start_time) * 1000)
+    tick = (time.time() - start_time) * 1000
     transTime(tick, "[INFO] Total process time: ")
+
 
 if __name__ == "__main__":
     main()

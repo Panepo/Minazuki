@@ -14,6 +14,9 @@ parser = argparse.ArgumentParser(
     description="Face recognition demo with OpenCV, dlib and face_recognition libraries."
 )
 parser.add_argument(
+    "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
+)
+parser.add_argument(
     "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
@@ -59,7 +62,11 @@ def main():
     try:
         while True:
             # Save program start time
-            start_time = time.time()
+            if args.skip is True:
+                if process_this_frame:
+                    start_time = time.time()
+            else:
+                start_time = time.time()
 
             # Read frame
             rs.getFrame()
@@ -69,7 +76,7 @@ def main():
                 break
 
             # Resize frame of video to 1/2 size for faster face recognition processing
-            small_frame = cv.resize(frame, (0, 0), fx=0.5, fy=0.5)
+            small_frame = cv.resize(frame, (0, 0), fx=args.scale, fy=args.scale)
 
             # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
             rgb_small_frame = small_frame[:, :, ::-1]
@@ -161,9 +168,14 @@ def main():
                 )
 
             # Calculate processing time
-            label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)
+            if args.skip is True:
+                if not process_this_frame:
+                    label = "Process time: %.2f ms" % ((time.time() - start_time) * 500)
+            else:
+                label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)
             if args.info is True:
-                print("[INFO] " + label)
+                if not process_this_frame:
+                    print("[INFO] " + label)
                 cv.putText(
                     frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255)
                 )

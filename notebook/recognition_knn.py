@@ -18,6 +18,9 @@ parser.add_argument(
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
 )
 parser.add_argument(
+    "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
+)
+parser.add_argument(
     "--knn", type=str, default="face_knn.pickle", help="path to KNN model"
 )
 parser.add_argument(
@@ -84,7 +87,7 @@ def main():
             break
 
         # Resize frame of video to 1/2 size for faster face recognition processing
-        small_frame = cv.resize(frame, (0, 0), fx=0.5, fy=0.5)
+        small_frame = cv.resize(frame, (0, 0), fx=args.scale, fy=args.scale)
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]

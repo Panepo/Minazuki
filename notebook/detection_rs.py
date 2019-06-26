@@ -6,6 +6,7 @@ import time
 import face_recognition
 import argparse
 from utils.realsense import realsense, rsOptions
+from utils.utilarg import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -13,9 +14,19 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "--skip",
-    type=bool,
-    default=True,
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
     help="Toggle of process face detection frame by frame.",
+)
+parser.add_argument(
+    "--info",
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
+    help="Toggle of display information in images.",
 )
 args = parser.parse_args()
 
@@ -75,9 +86,11 @@ def main():
 
             # Calculate processing time
             label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)
-            cv.putText(
-                frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255)
-            )
+            print("[INFO] " + label)
+            if args.info:
+                cv.putText(
+                    frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255)
+                )
 
             # Display the frame
             cv.imshow(kWinName, frame)
@@ -108,6 +121,7 @@ def main():
         # Stop streaming
         cv.destroyAllWindows()
         rs.pipeline.stop()
+
 
 if __name__ == "__main__":
     main()

@@ -6,6 +6,7 @@ import argparse
 import time
 import face_recognition
 import pickle
+from utils.utilarg import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -18,15 +19,29 @@ parser.add_argument(
 parser.add_argument(
     "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
 )
-parser.add_argument("--save", type=bool, help="Toggle of save the generated image.")
+parser.add_argument(
+    "--save",
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
+    help="Toggle of save the generated image.",
+)
 parser.add_argument(
     "--skip",
-    type=bool,
-    default=True,
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
     help="Toggle of process face detection frame by frame.",
 )
 parser.add_argument(
-    "--info", type=bool, default=True, help="Toggle of display information in images."
+    "--info",
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
+    help="Toggle of display information in images.",
 )
 args = parser.parse_args()
 

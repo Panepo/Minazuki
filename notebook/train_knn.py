@@ -17,13 +17,10 @@ parser.add_argument(
     default="face_knn.pickle",
     help="path to output pickle of knn model",
 )
-parser.add_argument(
-    "--neighbors", default=None, help="KNN parameter: n_neighbors"
-)
-parser.add_argument(
-    "--algorithm", default="ball_tree", help="KNN algorithm"
-)
+parser.add_argument("--neighbors", default=None, help="KNN parameter: n_neighbors")
+parser.add_argument("--algorithm", default="ball_tree", help="KNN algorithm")
 args = parser.parse_args()
+
 
 def main():
     # load learned faces
@@ -41,7 +38,9 @@ def main():
 
     # Create and train the KNN classifier
     print("[INFO] training KNN classifier ...")
-    knn_clf = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, algorithm=args.algorithm, weights='distance')
+    knn_clf = neighbors.KNeighborsClassifier(
+        n_neighbors=n_neighbors, algorithm=args.algorithm, weights="distance"
+    )
     knn_clf.fit(data["embeddings"], data["names"])
 
     # save trained KNN model
@@ -49,6 +48,7 @@ def main():
         f.write(pickle.dumps(knn_clf))
         f.close()
         print("[INFO] KNN classifier model {} saved".format(args.knn))
+
 
 if __name__ == "__main__":
     main()

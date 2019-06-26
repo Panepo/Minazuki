@@ -4,6 +4,7 @@ import math
 import argparse
 import time
 import face_recognition
+from utils.utilarg import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -13,15 +14,29 @@ parser.add_argument(
     "--input",
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
 )
-parser.add_argument("--save", type=bool, help="Toggle of save the generated image.")
+parser.add_argument(
+    "--save",
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
+    help="Toggle of save the generated image.",
+)
 parser.add_argument(
     "--skip",
-    type=bool,
-    default=True,
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
     help="Toggle of process face detection frame by frame.",
 )
 parser.add_argument(
-    "--info", type=bool, help="Toggle of display information in images."
+    "--info",
+    type=str2bool,
+    nargs="?",
+    const=True,
+    default=False,
+    help="Toggle of display information in images.",
 )
 args = parser.parse_args()
 

@@ -6,7 +6,7 @@ import argparse
 import time
 import face_recognition
 import pickle
-from utils.utilarg import str2bool
+from utils.argument import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -18,6 +18,9 @@ parser.add_argument(
 )
 parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
+)
+parser.add_argument(
+    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
 )
 parser.add_argument(
     "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
@@ -95,7 +98,7 @@ def main():
                 for face_encoding in face_encodings:
                     # See if the face is a match for the known face(s)
                     matches = face_recognition.compare_faces(
-                        data["embeddings"], face_encoding
+                        data["embeddings"], face_encoding, tolerance=args.threshold
                     )
                     name = "Unknown"
 
@@ -124,7 +127,7 @@ def main():
             for face_encoding in face_encodings:
                 # See if the face is a match for the known face(s)
                 matches = face_recognition.compare_faces(
-                    data["embeddings"], face_encoding
+                    data["embeddings"], face_encoding, tolerance=args.threshold
                 )
                 name = "Unknown"
 

@@ -7,7 +7,7 @@ import time
 import face_recognition
 import pickle
 from sklearn import svm
-from utils.utilarg import str2bool
+from utils.argument import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(

@@ -6,7 +6,7 @@ import time
 import face_recognition
 import argparse
 from utils.realsense import realsense, rsOptions
-from utils.utilarg import str2bool
+from utils.argument import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(

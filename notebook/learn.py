@@ -4,7 +4,7 @@ import argparse
 import face_recognition
 import time
 from utils.path import list_images, list_images_dirs
-from utils.utilarg import str2bool
+from utils.argument import str2bool
 from utils.time import transTime
 
 ############ Add argument parser for command line arguments ############

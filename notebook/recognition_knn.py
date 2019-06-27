@@ -7,7 +7,7 @@ import time
 import face_recognition
 import pickle
 from sklearn import neighbors
-from utils.utilarg import str2bool
+from utils.argument import str2bool
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -22,6 +22,9 @@ parser.add_argument(
 )
 parser.add_argument(
     "--knn", type=str, default="face_knn.pickle", help="path to KNN model"
+)
+parser.add_argument(
+    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
 )
 parser.add_argument(
     "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
@@ -68,7 +71,6 @@ def main():
     # Initialize some variables
     face_locations = []
     process_this_frame = True
-    distance_threshold = 0.6
 
     # Create a new named window
     kWinName = "Face recognition demo with KNN classifier"
@@ -104,7 +106,7 @@ def main():
                 closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
                 face_names = []
                 for i in range(len(face_locations)):
-                    if closest_distances[0][i][0] <= distance_threshold:
+                    if closest_distances[0][i][0] <= args.threshold:
                         best_match_index = closest_distances[1][i][0]
                         name = data["names"][best_match_index]
                     else:
@@ -121,7 +123,7 @@ def main():
             closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
             face_names = []
             for i in range(len(face_locations)):
-                if closest_distances[0][i][0] <= distance_threshold:
+                if closest_distances[0][i][0] <= args.threshold:
                     best_match_index = closest_distances[1][i][0]
                     name = data["names"][best_match_index]
                 else:

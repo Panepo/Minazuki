@@ -3,6 +3,8 @@ import pickle
 import argparse
 import face_recognition
 import time
+import cv2 as cv
+import math
 from utils.path import list_images, list_images_dirs
 from utils.argument import str2bool
 from utils.time import transTime
@@ -34,6 +36,14 @@ parser.add_argument(
     default=False,
     help="Toggle of perform face detection first.",
 )
+parser.add_argument(
+    "--resize",
+    type=int,
+    nargs="?",
+    const=True,
+    default=640,
+    help="Perform image resizing before learning.",
+)
 args = parser.parse_args()
 
 
@@ -56,10 +66,22 @@ def main():
     # initialize error lists
     error = []
 
+    # display image reading method
+    if args.resize:
+        print("[INFO] reading image by OpenCV and reisze to {}".format(args.resize))
+    else:
+        print("[INFO] reading image by PIL")
+
     for (i, imagePath) in enumerate(imagePaths):
         # extract the person name from the image path
         print("[INFO] processing image {}/{}".format(i + 1, len(imagePaths)))
-        image = face_recognition.load_image_file(imagePath)
+        if args.resize:
+            img = cv.imread(imagePath)
+            height, width = img.shape[:2]
+            modHeight = math.floor(args.resize * height / width)
+            image = cv.resize(img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC)
+        else:
+            image = face_recognition.load_image_file(imagePath)
 
         if args.detection is True:
             face_locations = face_recognition.face_locations(image)

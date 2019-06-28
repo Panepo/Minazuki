@@ -145,10 +145,11 @@ def main():
             # Display the results
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/2 size
-                top *= 2
-                right *= 2
-                bottom *= 2
-                left *= 2
+                scale = math.floor(1 / args.scale)
+                top *= scale
+                right *= scale
+                bottom *= scale
+                left *= scale
 
                 # Draw a box around the face
                 cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)

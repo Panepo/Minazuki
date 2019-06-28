@@ -1,0 +1,4 @@
+face_recognition==1.2.3
+numpy==1.16.2
+pyrealsense2==2.23.0.910
+scikit_learn==0.21.2

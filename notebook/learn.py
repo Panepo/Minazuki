@@ -108,7 +108,7 @@ def main():
         f.close()
         print("[INFO] face embeddings {} saved".format(args.embeddings))
 
-    # display error list
+    # display and save error list
     if len(error) > 0:
         print("[INFO] total {} error images".format(len(error)))
         with open(args.errors, "w", encoding="utf-8") as f:

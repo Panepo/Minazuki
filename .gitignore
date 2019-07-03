@@ -210,3 +210,5 @@ clinet/flow-typed/npm/
 /notebook/*.png
 /notebook/*.pickle
 /notebook/error*.txt
+/notebook/log*.txt
+temp/

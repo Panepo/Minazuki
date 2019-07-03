@@ -7,6 +7,7 @@ import math
 from utils.path import list_dirs, list_images
 from utils.argument import str2bool
 from utils.time import transTime
+from utils.face import faceEncoding
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -45,23 +46,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-def faceEncoding(imagePath):
-    if args.resize:
-        img = cv.imread(imagePath)
-        height, width = img.shape[:2]
-        modHeight = math.floor(args.resize * height / width)
-        image = cv.resize(img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC)
-    else:
-        image = face_recognition.load_image_file(imagePath)
-
-    if args.detection is True:
-        face_locations = face_recognition.face_locations(image)
-        face_encodings = face_recognition.face_encodings(image, face_locations)
-    else:
-        face_encodings = face_recognition.face_encodings(image)
-
-    return face_encodings
-
 def main():
     # get start time
     start_time = time.time()
@@ -92,22 +76,22 @@ def main():
         for (i, imagePath) in enumerate(imagePaths):
             print("[INFO] processing image {}/{}".format(i + 1, len(imagePaths)))
             if flagRef is True:
-                refFace = faceEncoding(imagePath)
+                refFace = faceEncoding(args, imagePath)
                 if len(refFace) > 0:
                     flagRef = False
                 else:
                     print("[ERROR] no face found in image {}".format(imagePath))
                     error.append(imagePath)
             else:
-                curFace = faceEncoding(imagePath)
+                curFace = faceEncoding(args, imagePath)
                 if len(curFace) > 0:
                     face_distances = face_recognition.face_distance(refFace, curFace[0])
                     print(face_distances[0])
-                    ### ADD CONTENT
+                    if args.log:
+                        log.append(face_distances[0])
+                    ''' ADD CONTENT
                     if face_distances[0] > args.threshold:
-                        if args.log:
-                            log.append(face_distances[0])
-                    ### ADD CONTENT
+                    '''
                 else:
                     print("[ERROR] no face found in image {}".format(imagePath))
                     error.append(imagePath)

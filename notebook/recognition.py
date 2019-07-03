@@ -143,6 +143,7 @@ def main():
                 best_match_index = np.argmin(face_distances)
                 if matches[best_match_index]:
                     name = data["names"][best_match_index]
+                    print("[INFO] Recognize {} with distance %.2f".format(name) % face_distances[best_match_index])
 
                 face_names.append(name)
 

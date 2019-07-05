@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import type { Dispatch } from '../models'
 import * as actionAuth from '../actions/actionAuth'
@@ -70,7 +69,7 @@ type ProvidedProps = {
 type Props = {
   classes: Object,
   auth: Object,
-  actionA: Dispatch
+  logoutUser: () => {}
 }
 
 type State = {
@@ -89,7 +88,7 @@ class Header extends React.Component<ProvidedProps & Props, State> {
   }
 
   handleLogout = () => {
-    this.props.actionA.logoutUser()
+    this.props.logoutUser()
   }
 
   renderAvatar = () => {
@@ -200,7 +199,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    actionA: bindActionCreators(actionAuth, dispatch)
+    logoutUser: () => {
+      dispatch(actionAuth.logoutUser())
+    }
   }
 }
 

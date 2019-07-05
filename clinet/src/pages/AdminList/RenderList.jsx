@@ -58,10 +58,6 @@ const RenderList = (props: Props) => {
               <Typography gutterBottom variant="h5" component="h2">
                 {data.name}
               </Typography>
-              <Typography component="p">
-                Description can write here. Description can write here.
-                Description can write here. Description can write here.
-              </Typography>
             </CardContent>
             <CardActions>
               <Tooltip title="Content">

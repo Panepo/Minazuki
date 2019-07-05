@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import type { Dispatch } from '../models'
 import * as actionInfo from '../actions/actionInfo'
-import { bindActionCreators } from 'redux'
 import type { StateInfo } from '../models/modelInfo'
 import type { Node } from 'react'
 import Helmet from 'react-helmet'
@@ -34,8 +33,8 @@ type Props = {
   content: Node,
   gridNormal: number,
   gridPhone: number,
-  actionsI: Dispatch,
-  info: StateInfo
+  info: StateInfo,
+  infoClose: () => {}
 }
 
 class Layout extends React.Component<ProvidedProps & Props> {
@@ -50,7 +49,7 @@ class Layout extends React.Component<ProvidedProps & Props> {
     if (reason === 'clickaway') {
       return
     }
-    this.props.actionsI.infoClose()
+    this.props.infoClose()
   }
 
   render() {
@@ -126,9 +125,11 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    actionsI: bindActionCreators(actionInfo, dispatch)
+    infoClose: () => {
+      dispatch(actionInfo.infoClose())
+    }
   }
 }
 

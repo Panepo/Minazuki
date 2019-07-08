@@ -13,7 +13,7 @@ async function run() {
   await faceapi.nets.faceLandmark68Net.loadFromDisk(modelLink)
   const tstart = process.hrtime()
 
-  const img = await canvas.loadImage('./h1.jpg')
+  const img = await canvas.loadImage('../images/h1.jpg')
   const results = await faceapi
     .detectAllFaces(img, faceDetectionOptions)
     .withFaceLandmarks()
@@ -25,9 +25,7 @@ async function run() {
   const tend = process.hrtime(tstart)
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)
 
-  const fileName = 'landmark_' + new Date().getTime().toString() + '.jpg'
-  saveFile(fileName, out.toBuffer('image/jpeg'))
-  console.info('[INFO] saved results to out/' + fileName)
+  saveFile('landmark', out.toBuffer('image/jpeg'))
 }
 
 run()

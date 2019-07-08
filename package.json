@@ -6,16 +6,16 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"yarn server\" \"yarn clinet\"",
+    "start": "concurrently \"yarn server\" \"yarn client\"",
     "server": "cd server && yarn start",
-    "clinet": "cd clinet && yarn start",
+    "client": "cd client && yarn start",
     "database": "mongod --dbpath=./db --smallfiles",
-    "lint": "concurrently \"yarn lint-server\" \"yarn lint-clinet\"",
+    "lint": "concurrently \"yarn lint-server\" \"yarn lint-client\"",
     "lint-server": "cd server && yarn lint",
-    "lint-clinet": "cd clinet && yarn lint",
-    "prettier": "concurrently \"yarn prettier-server\" \"yarn prettier-clinet\"",
+    "lint-client": "cd client && yarn lint",
+    "prettier": "concurrently \"yarn prettier-server\" \"yarn prettier-client\"",
     "prettier-server": "cd server && yarn prettier",
-    "prettier-clinet": "cd clinet && yarn prettier",
+    "prettier-client": "cd client && yarn prettier",
     "precommit": "yarn prettier && git add"
   },
   "lint-staged": {

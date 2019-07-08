@@ -206,9 +206,9 @@ clinet/flow-typed/npm/
 */archieve/*
 */data/*
 
-/notebook/*.jpg
-/notebook/*.png
-/notebook/*.pickle
-/notebook/error*.txt
-/notebook/log*.txt
+/python/*.jpg
+/python/*.png
+/python/*.pickle
+/python/error*.txt
+/python/log*.txt
 temp/

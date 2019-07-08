@@ -6,7 +6,7 @@ import {
   faceDetectionOptions,
   saveFile,
   modelLink
-} from './commons'
+} from './utils'
 
 async function run() {
   await faceDetectionNet.loadFromDisk(modelLink)

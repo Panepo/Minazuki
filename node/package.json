@@ -1,0 +1,21 @@
+{
+  "name": "minazuki-node",
+  "version": "1.0.0",
+  "description": "minazuki-node",
+  "author": "Panepo <panepo@github.io>",
+  "private": true,
+  "scripts": {
+    "prettier": "prettier --single-quote --no-semi --trailing-comma none --write \"**/*.{ts,tsx}\""
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.2.3",
+    "canvas": "^2.5.0",
+    "face-api.js": "^0.20.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.12",
+    "prettier": "^1.18.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
+  }
+}

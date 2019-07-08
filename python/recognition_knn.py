@@ -8,6 +8,7 @@ import face_recognition
 import pickle
 from sklearn import neighbors
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -21,13 +22,13 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--knn", type=str, default="face_knn.pickle", help="path to KNN model"
+    "--knn", type=str, default="./pickle/face_knn.pickle", help="path to KNN model"
 )
 parser.add_argument(
     "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
 )
 parser.add_argument(
-    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
+    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
     "--save",
@@ -63,7 +64,7 @@ def main():
     print("[INFO] faces loaded from {} ...".format(args.pickle))
     data = pickle.loads(open(args.pickle, "rb").read())
 
-    # load svm model
+    # load KNN model
     print("[INFO] loading KNN model ...")
     print("[INFO] KNN model from {} ...".format(args.knn))
     knn_clf = pickle.loads(open(args.knn, "rb").read())
@@ -169,10 +170,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            fileName = (
-                "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
-            )
-            cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+            saveResult(frame, 'recognition_knn')
 
     # Release handle to the webcam
     cap.release()

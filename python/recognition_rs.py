@@ -8,6 +8,7 @@ import face_recognition
 import pickle
 from utils.realsense import realsense, rsOptions
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -17,7 +18,7 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
+    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
     "--skip",
@@ -186,13 +187,8 @@ def main():
 
             # Process screen capture
             if flagCapture:
-                print("Screen captured")
-                fileName = (
-                    "Screen_"
-                    + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime())
-                    + ".png"
-                )
-                cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+                print("[INFO] Screen captured")
+                saveResult(frame, 'recognition_rs')
                 flagCapture = False
 
             # Keyboard commands

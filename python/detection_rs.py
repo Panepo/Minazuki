@@ -7,6 +7,7 @@ import face_recognition
 import argparse
 from utils.realsense import realsense, rsOptions
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -97,13 +98,8 @@ def main():
 
             # Process screen capture
             if flagCapture:
-                print("Screen captured")
-                fileName = (
-                    "Screen_"
-                    + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime())
-                    + ".png"
-                )
-                cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+                print("[INFO] Screen captured")
+                saveResult(frame, 'detection_rs')
                 flagCapture = False
 
             # Keyboard commands

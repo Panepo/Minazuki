@@ -20,10 +20,10 @@ parser.add_argument(
     help="path to input directory of faces + images",
 )
 parser.add_argument(
-    "--errors", type=str, default="error.txt", help="path to output error face lists."
+    "--errors", type=str, default="./log/error.txt", help="path to output error face lists."
 )
 parser.add_argument(
-    "--log", type=str, default="log.txt", help="path to output log file."
+    "--log", type=str, default="./log/log.txt", help="path to output log file."
 )
 parser.add_argument(
     "--detection",

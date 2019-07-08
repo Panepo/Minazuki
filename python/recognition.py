@@ -7,6 +7,7 @@ import time
 import face_recognition
 import pickle
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -23,7 +24,7 @@ parser.add_argument(
     "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
 )
 parser.add_argument(
-    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
+    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
     "--save",
@@ -186,10 +187,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            fileName = (
-                "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
-            )
-            cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+            saveResult(frame, 'recognition')
 
     # Release handle to the webcam
     cap.release()

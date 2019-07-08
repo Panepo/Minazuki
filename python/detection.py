@@ -5,6 +5,7 @@ import argparse
 import time
 import face_recognition
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -101,10 +102,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            fileName = (
-                "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
-            )
-            cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+            saveResult(frame, 'detection')
 
     # Release handle to the webcam
     cap.release()

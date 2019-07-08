@@ -22,11 +22,11 @@ parser.add_argument(
 parser.add_argument(
     "--embeddings",
     type=str,
-    default="face.pickle",
+    default="./pickle/face.pickle",
     help="path to output serialized db of facial embeddings",
 )
 parser.add_argument(
-    "--errors", type=str, default="error.txt", help="path to output error face lists."
+    "--errors", type=str, default="./log/error.txt", help="path to output error face lists."
 )
 parser.add_argument(
     "--detection",

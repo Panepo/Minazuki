@@ -10,12 +10,12 @@ parser = argparse.ArgumentParser(
     description="Train SVM classifier from compressed pickle file."
 )
 parser.add_argument(
-    "--pickle", type=str, default="face.pickle", help="path to input pickle of faces"
+    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
 )
 parser.add_argument(
     "--svm",
     type=str,
-    default="face_svm.pickle",
+    default="./pickle/face_svm.pickle",
     help="path to output pickle of svm model",
 )
 args = parser.parse_args()

@@ -8,6 +8,7 @@ import face_recognition
 import pickle
 from sklearn import svm
 from utils.argument import str2bool
+from utils.save import saveResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -21,7 +22,7 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--svm", type=str, default="face_svm.pickle", help="path to SVM model"
+    "--svm", type=str, default="./pickle/face_svm.pickle", help="path to SVM model"
 )
 parser.add_argument(
     "--save",
@@ -149,10 +150,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            fileName = (
-                "Output_" + time.strftime("%Y-%m-%d_%H%M%S-", time.localtime()) + ".png"
-            )
-            cv.imwrite(fileName, frame, [int(cv.IMWRITE_PNG_COMPRESSION), 0])
+            saveResult(frame, 'recognition_svm')
 
     # Release handle to the webcam
     cap.release()

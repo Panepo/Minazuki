@@ -1,6 +1,5 @@
 import math
 
-
 def transTime(tick, string):
     if tick >= 60000:
         mins = math.floor(tick / 60000)

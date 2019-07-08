@@ -206,13 +206,9 @@ clinet/flow-typed/npm/
 */archieve/*
 */data/*
 
-/python/*.jpg
-/python/*.png
-/python/*.pickle
-/python/error*.txt
-/python/log*.txt
-temp/
-
-/node/*.jpg
-/node/*.png
-/node/out/
+/temp/
+/images/
+/python/pickle/
+/python/log/
+/python/output/
+/node/output/

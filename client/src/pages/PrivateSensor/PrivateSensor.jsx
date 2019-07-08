@@ -15,6 +15,7 @@ import type { StateSetting } from '../../models/modelSetting'
 import * as faceapi from 'face-api.js'
 import { createFaceMatcher } from '../../helpers/face.helper'
 import { environment } from '../../environment'
+import { loadModel, modelInitial } from '../../helpers/model.helper'
 import Layout from '../Layout'
 import { Link } from 'react-router-dom'
 import WebcamCrop from '../../componments/WebcamCrop'
@@ -118,27 +119,8 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
       })
     }
     await this.props.actionsP.peopleGetAll()
-    const dev = process.env.NODE_ENV === 'development'
-    if (dev) {
-      await faceapi.loadTinyFaceDetectorModel(environment.urlDev + 'models')
-      await faceapi.loadFaceLandmarkTinyModel(environment.urlDev + 'models')
-      await faceapi.loadFaceRecognitionModel(environment.urlDev + 'models')
-    } else {
-      await faceapi.loadTinyFaceDetectorModel(environment.urlProd + 'models')
-      await faceapi.loadFaceLandmarkTinyModel(environment.urlProd + 'models')
-      await faceapi.loadFaceRecognitionModel(environment.urlProd + 'models')
-    }
-    const initial = document.getElementById('initial_black')
-    await faceapi
-      .detectAllFaces(
-        initial,
-        new faceapi.TinyFaceDetectorOptions({
-          inputSize: environment.tinyInputSize,
-          scoreThreshold: environment.tinyThreshold
-        })
-      )
-      .withFaceLandmarks(true)
-      .withFaceDescriptors()
+    await loadModel()
+    await modelInitial('initial_black')
 
     this.setState({ isLoading: false })
   }
@@ -180,7 +162,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
         isSensing: false
       })
     } else {
-      this.faceMatcher = await createFaceMatcher(this.props.data.data)
+      this.faceMatcher = await createFaceMatcher(this.props.data.data, 0.4)
       this.interval = window.setInterval(async () => await this.faceMain(), 10)
       this.setState({
         isSensing: true
@@ -241,7 +223,7 @@ class PrivateSensor extends React.Component<ProvidedProps & Props, State> {
           scoreThreshold: environment.tinyThreshold
         })
       )
-      .withFaceLandmarks(true)
+      .withFaceLandmarks(environment.useTinyLandmark)
       .withFaceDescriptors()
 
     if (results) {

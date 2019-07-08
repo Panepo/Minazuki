@@ -11,9 +11,20 @@ class EnvironmentValues {
     height: 360
   }
 
+  useTinyFaceDetector = true
+  useTinyLandmark = false
+
   // TinyFaceDetector options
   tinyInputSize = 160
   tinyThreshold = 0.5
+
+  // SSD Mobilenet v1 options
+  ssdMinConfidence = 0.5
+  ssdMaxResults = 10
+
+  // Blink detection options
+  blinkEARThreshold = 0.4
+  blinkTimeThreshold = 500
 
   // Face record options
   recordRepeatTime = 60000 // 1 min

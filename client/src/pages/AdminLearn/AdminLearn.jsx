@@ -11,7 +11,7 @@ import * as actionData from '../../actions/actionData'
 import type { PeopleData } from '../../models/modelPeople'
 import type { StateData } from '../../models/modelData'
 import * as faceapi from 'face-api.js'
-import { environment } from '../../environment'
+import { loadModel } from '../../helpers/model.helper'
 import Layout from '../Layout'
 import Loading from '../Loading'
 import { Link } from 'react-router-dom'
@@ -57,8 +57,9 @@ type Props = {
   peoples: PeopleData[],
   data: StateData,
   actionsP: Dispatch,
-  actionsI: Dispatch,
-  actionsD: Dispatch
+  actionsD: Dispatch,
+  infoClose: () => {},
+  infoSet: (input: StateInfo) => {}
 }
 
 type State = {
@@ -81,16 +82,7 @@ class AdminLearn extends React.Component<ProvidedProps & Props, State> {
 
   componentDidMount = async () => {
     await this.props.actionsP.peopleGetAll()
-    const dev = process.env.NODE_ENV === 'development'
-    if (dev) {
-      await faceapi.loadTinyFaceDetectorModel(environment.urlDev + 'models')
-      await faceapi.loadFaceLandmarkTinyModel(environment.urlDev + 'models')
-      await faceapi.loadFaceRecognitionModel(environment.urlDev + 'models')
-    } else {
-      await faceapi.loadTinyFaceDetectorModel(environment.urlProd + 'models')
-      await faceapi.loadFaceLandmarkTinyModel(environment.urlProd + 'models')
-      await faceapi.loadFaceRecognitionModel(environment.urlProd + 'models')
-    }
+    await loadModel()
     this.setState({ isLoading: false })
   }
 
@@ -116,7 +108,7 @@ class AdminLearn extends React.Component<ProvidedProps & Props, State> {
       let fr = new FileReader()
       fr.onload = e => {
         this.props.actionsD.dataImport(JSON.parse(e.target.result))
-        this.props.actionsI.infoSet({
+        this.props.infoSet({
           onoff: true,
           variant: 'success',
           message: 'Face file imported'
@@ -138,7 +130,7 @@ class AdminLearn extends React.Component<ProvidedProps & Props, State> {
   }
 
   handleClear = () => {
-    this.props.actionsI.infoSet({
+    this.props.infoSet({
       onoff: true,
       variant: 'info',
       message: 'Face file cleared'
@@ -180,13 +172,13 @@ class AdminLearn extends React.Component<ProvidedProps & Props, State> {
 
     if (labeledDescriptors.length > 0) {
       this.props.actionsD.dataImport(labeledDescriptors)
-      this.props.actionsI.infoSet({
+      this.props.infoSet({
         onoff: true,
         variant: 'success',
         message: 'Learning success'
       })
     } else {
-      this.props.actionsI.infoSet({
+      this.props.infoSet({
         onoff: true,
         variant: 'error',
         message: 'Learning failed'
@@ -338,8 +330,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     actionsP: bindActionCreators(actionPeople, dispatch),
-    actionsI: bindActionCreators(actionInfo, dispatch),
-    actionsD: bindActionCreators(actionData, dispatch)
+    actionsD: bindActionCreators(actionData, dispatch),
+    infoClose: () => {
+      dispatch(actionInfo.infoClose())
+    },
+    infoSet: (input: StateInfo) => {
+      dispatch(actionInfo.infoSet(input))
+    }
   }
 }
 

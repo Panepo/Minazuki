@@ -212,3 +212,7 @@ clinet/flow-typed/npm/
 /python/error*.txt
 /python/log*.txt
 temp/
+
+/node/*.jpg
+/node/*.png
+/node/out/

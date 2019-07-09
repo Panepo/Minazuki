@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "tslint-react",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "linterOptions": {
+    "exclude": [ "src/raw/*.json"]
+  },
+  "rules": {
+    "jsx-boolean-value": false,
+    "jsx-no-lambda": false,
+    "jsx-no-multiline-js": false
+  }
+}

@@ -1,5 +1,4 @@
 import * as faceapi from 'face-api.js'
-
 import {
   canvas,
   faceDetectionNet,
@@ -9,19 +8,28 @@ import {
 } from './utils'
 
 async function run() {
+  // load face recognition model
   await faceDetectionNet.loadFromDisk(modelLink)
+
+  // get start time
   const tstart = process.hrtime()
 
+  // open an image file
   const img = await canvas.loadImage('../images/h1.jpg')
+  // find all the faces and face encodings in the current image
   const detections = await faceapi.detectAllFaces(img, faceDetectionOptions)
 
+  // create a canvas from image
   const out = faceapi.createCanvasFromMedia(img) as any
+  // display the results, draw a box around the face
   faceapi.draw.drawDetections(out, detections)
 
+  // save results
+  saveFile('detection', out.toBuffer('image/jpeg'))
+
+  // calculate processing time
   const tend = process.hrtime(tstart)
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)
-
-  saveFile('detection', out.toBuffer('image/jpeg'))
 }
 
 run()

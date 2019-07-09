@@ -19,8 +19,7 @@ export function saveJson(name: string, buf: any) {
   }
 
   const fileName = name + '_' + new Date().getTime().toString() + '.json'
-  const data =
-    'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(buf))
+  const data = JSON.stringify(buf)
   fs.writeFileSync(path.resolve(baseDir, fileName), data)
   console.info('[INFO] saved data to output/' + fileName)
 }

@@ -8,7 +8,7 @@ export const faceDetectionNet = faceapi.nets.tinyFaceDetector
 const minConfidence = 0.5
 
 // TinyFaceDetectorOptions
-const inputSize = 320
+const inputSize = 384
 const scoreThreshold = 0.5
 
 // MtcnnOptions

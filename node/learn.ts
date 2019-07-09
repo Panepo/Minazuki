@@ -44,7 +44,7 @@ async function run() {
   )
 
   console.info('[INFO] serializing ' + total + ' encodings...')
-  saveJson('faceData', labeledDescriptors)
+  saveJson('faces', labeledDescriptors)
 
   const tend = process.hrtime(tstart)
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)

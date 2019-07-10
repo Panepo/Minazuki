@@ -9,6 +9,7 @@ import pickle
 from sklearn import svm
 from utils.argument import str2bool
 from utils.save import saveResult
+from utils.draw import drawResult
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -112,30 +113,7 @@ def main():
                 face_names.append(name[0])
 
         # Display the results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/2 size
-            scale = math.floor(1 / args.scale)
-            top *= scale
-            right *= scale
-            bottom *= scale
-            left *= scale
-
-            # Draw a box around the face
-            cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-
-            # Draw a label with a name below the face
-            cv.rectangle(
-                frame, (left, bottom - 15), (right, bottom), (255, 0, 0), cv.FILLED
-            )
-            cv.putText(
-                frame,
-                name,
-                (left, bottom),
-                cv.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (255, 255, 255),
-                1,
-            )
+        drawResult(frame, face_locations, face_names, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)

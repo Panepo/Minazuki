@@ -1,14 +1,13 @@
 # Import required modules
 import cv2 as cv
-import numpy as np
-import math
 import argparse
 import time
 import face_recognition
 import pickle
-from sklearn import neighbors
 from utils.argument import str2bool
 from utils.save import saveResult
+from utils.draw import drawResult
+from utils.faceMatch import faceMatchKNN
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -56,7 +55,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-
 def main():
     # load learned faces
     print("[INFO] loading faces ...")
@@ -66,7 +64,7 @@ def main():
 
     # load KNN model
     print("[INFO] loading KNN model ...")
-    print("[INFO] KNN model from {} ...".format(args.knn))
+    print("[INFO] KNN model loaded from {} ...".format(args.knn))
     knn_clf = pickle.loads(open(args.knn, "rb").read())
 
     # Initialize some variables
@@ -98,64 +96,14 @@ def main():
         if args.skip:
             # Only process every other frame of video to save time
             if process_this_frame:
-                # Find all the faces and face encodings in the current frame of video
-                face_locations = face_recognition.face_locations(rgb_small_frame)
-                face_encodings = face_recognition.face_encodings(
-                    rgb_small_frame, face_locations
-                )
-
-                closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
-                face_names = []
-                for i in range(len(face_locations)):
-                    if closest_distances[0][i][0] <= args.threshold:
-                        best_match_index = closest_distances[1][i][0]
-                        name = data["names"][best_match_index]
-                    else:
-                        name = "Unknown"
-                    face_names.append(name)
+                face_locations, face_names = faceMatchKNN(rgb_small_frame, knn_clf, data, args.threshold)
 
             process_this_frame = not process_this_frame
         else:
-            face_locations = face_recognition.face_locations(rgb_small_frame)
-            face_encodings = face_recognition.face_encodings(
-                rgb_small_frame, face_locations
-            )
-
-            closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors=1)
-            face_names = []
-            for i in range(len(face_locations)):
-                if closest_distances[0][i][0] <= args.threshold:
-                    best_match_index = closest_distances[1][i][0]
-                    name = data["names"][best_match_index]
-                else:
-                    name = "Unknown"
-                face_names.append(name)
+            face_locations, face_names = faceMatchKNN(rgb_small_frame, knn_clf, data, args.threshold)
 
         # Display the results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/2 size
-            scale = math.floor(1 / args.scale)
-            top *= scale
-            right *= scale
-            bottom *= scale
-            left *= scale
-
-            # Draw a box around the face
-            cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-
-            # Draw a label with a name below the face
-            cv.rectangle(
-                frame, (left, bottom - 15), (right, bottom), (255, 0, 0), cv.FILLED
-            )
-            cv.putText(
-                frame,
-                name,
-                (left, bottom),
-                cv.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (255, 255, 255),
-                1,
-            )
+        drawResult(frame, face_locations, face_names, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)

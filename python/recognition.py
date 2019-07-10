@@ -1,13 +1,13 @@
 # Import required modules
 import cv2 as cv
-import numpy as np
-import math
 import argparse
 import time
 import face_recognition
 import pickle
 from utils.argument import str2bool
 from utils.save import saveResult
+from utils.draw import drawResult
+from utils.faceMatch import faceMatch
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -52,7 +52,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-
 def main():
     # load learned faces
     print("[INFO] loading faces ...")
@@ -89,90 +88,13 @@ def main():
         if args.skip:
             # Only process every other frame of video to save time
             if process_this_frame:
-                # Find all the faces and face encodings in the current frame of video
-                face_locations = face_recognition.face_locations(rgb_small_frame)
-                face_encodings = face_recognition.face_encodings(
-                    rgb_small_frame, face_locations
-                )
-
-                face_names = []
-                for face_encoding in face_encodings:
-                    # See if the face is a match for the known face(s)
-                    matches = face_recognition.compare_faces(
-                        data["embeddings"], face_encoding, tolerance=args.threshold
-                    )
-                    name = "Unknown"
-
-                    # # If a match was found in known_face_encodings, just use the first one.
-                    # if True in matches:
-                    #     first_match_index = matches.index(True)
-                    #     name = known_face_names[first_match_index]
-
-                    # Or instead, use the known face with the smallest distance to the new face
-                    face_distances = face_recognition.face_distance(
-                        data["embeddings"], face_encoding
-                    )
-                    best_match_index = np.argmin(face_distances)
-                    if matches[best_match_index]:
-                        name = data["names"][best_match_index]
-
-                    face_names.append(name)
+                face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
             process_this_frame = not process_this_frame
         else:
-            face_locations = face_recognition.face_locations(rgb_small_frame)
-            face_encodings = face_recognition.face_encodings(
-                rgb_small_frame, face_locations
-            )
-
-            face_names = []
-            for face_encoding in face_encodings:
-                # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(
-                    data["embeddings"], face_encoding, tolerance=args.threshold
-                )
-                name = "Unknown"
-
-                # # If a match was found in known_face_encodings, just use the first one.
-                # if True in matches:
-                #     first_match_index = matches.index(True)
-                #     name = known_face_names[first_match_index]
-
-                # Or instead, use the known face with the smallest distance to the new face
-                face_distances = face_recognition.face_distance(
-                    data["embeddings"], face_encoding
-                )
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    name = data["names"][best_match_index]
-                    print("[INFO] Recognize {} with distance %.2f".format(name) % face_distances[best_match_index])
-
-                face_names.append(name)
+            face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
 
         # Display the results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/2 size
-            scale = math.floor(1 / args.scale)
-            top *= scale
-            right *= scale
-            bottom *= scale
-            left *= scale
-
-            # Draw a box around the face
-            cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-
-            # Draw a label with a name below the face
-            cv.rectangle(
-                frame, (left, bottom - 15), (right, bottom), (255, 0, 0), cv.FILLED
-            )
-            cv.putText(
-                frame,
-                name,
-                (left, bottom),
-                cv.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (255, 255, 255),
-                1,
-            )
+        drawResult(frame, face_locations, face_names, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)

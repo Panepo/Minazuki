@@ -9,8 +9,12 @@ export function saveFile(name: string, buf: Buffer) {
   }
 
   const fileName = name + '_' + new Date().getTime().toString() + '.jpg'
-  fs.writeFileSync(path.resolve(baseDir, fileName), buf)
-  console.info('[INFO] saved results to output/' + fileName)
+  fs.writeFile(path.resolve(baseDir, fileName), buf, function (err) {
+  if (err)
+    console.info(err)
+  else
+    console.info('[INFO] saved image to output/' + fileName)
+  })
 }
 
 export function saveJson(name: string, buf: any) {
@@ -20,6 +24,24 @@ export function saveJson(name: string, buf: any) {
 
   const fileName = name + '_' + new Date().getTime().toString() + '.json'
   const data = JSON.stringify(buf)
-  fs.writeFileSync(path.resolve(baseDir, fileName), data)
-  console.info('[INFO] saved data to output/' + fileName)
+  fs.writeFile(path.resolve(baseDir, fileName), data, function (err) {
+  if (err)
+    console.info(err)
+  else
+    console.info('[INFO] saved json to output/' + fileName)
+  })
+}
+
+export function saveTxt(name: string, data: any) {
+  if (!fs.existsSync(baseDir)) {
+    fs.mkdirSync(baseDir)
+  }
+
+  const fileName = name + '_' + new Date().getTime().toString() + '.txt'
+  fs.writeFile(path.resolve(baseDir, fileName), data, function (err) {
+  if (err)
+    console.info(err)
+  else
+    console.info('[INFO] saved data to output/' + fileName)
+  })
 }

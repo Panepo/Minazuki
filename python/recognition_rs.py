@@ -1,5 +1,6 @@
 # Import required modules
 import cv2 as cv
+import numpy as np
 import argparse
 import time
 import face_recognition
@@ -16,6 +17,9 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
+)
+parser.add_argument(
+    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
 )
 parser.add_argument(
     "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
@@ -37,7 +41,6 @@ parser.add_argument(
     help="Toggle of display information in images.",
 )
 args = parser.parse_args()
-
 
 def main():
     # load learned faces
@@ -103,8 +106,8 @@ def main():
 
             # Display infomation
             if args.info is True:
-                if not process_this_frame:
-                    print("[INFO] " + label)
+                # if not process_this_frame:
+                    # print("[INFO] " + label)
                 cv.putText(
                     frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255)
                 )
@@ -133,7 +136,6 @@ def main():
         # Stop streaming
         cv.destroyAllWindows()
         rs.pipeline.stop()
-
 
 if __name__ == "__main__":
     main()

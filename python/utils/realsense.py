@@ -78,13 +78,31 @@ class realsense:
 
         # Configure depth and color streams
         if self.options.enableColor is True:
-            self.config.enable_stream(rs.stream.color, self.options.resColor[0], self.options.resColor[1], rs.format.bgr8, 30)
+            self.config.enable_stream(
+                rs.stream.color,
+                self.options.resColor[0],
+                self.options.resColor[1],
+                rs.format.bgr8,
+                30,
+            )
 
         if self.options.enableInfrared is True:
-            self.config.enable_stream(rs.stream.infrared, self.options.resInfrared[0], self.options.resInfrared[1], rs.format.bgr8, 30)
+            self.config.enable_stream(
+                rs.stream.infrared,
+                self.options.resInfrared[0],
+                self.options.resInfrared[1],
+                rs.format.bgr8,
+                30,
+            )
 
         if self.options.enableDepth is True:
-            self.config.enable_stream(rs.stream.depth, self.options.resDepth[0], self.options.resDepth[1], rs.format.z16, 30)
+            self.config.enable_stream(
+                rs.stream.depth,
+                self.options.resDepth[0],
+                self.options.resDepth[1],
+                rs.format.z16,
+                30,
+            )
 
         # Start streaming
         cfg = self.pipeline.start(self.config)

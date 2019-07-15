@@ -26,7 +26,10 @@ parser.add_argument(
     help="path to output serialized db of facial embeddings",
 )
 parser.add_argument(
-    "--errors", type=str, default="./log/error.txt", help="path to output error face lists."
+    "--errors",
+    type=str,
+    default="./log/error.txt",
+    help="path to output error face lists.",
 )
 parser.add_argument(
     "--detection",
@@ -79,7 +82,9 @@ def main():
             img = cv.imread(imagePath)
             height, width = img.shape[:2]
             modHeight = math.floor(args.resize * height / width)
-            image = cv.resize(img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC)
+            image = cv.resize(
+                img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC
+            )
         else:
             image = face_recognition.load_image_file(imagePath)
 

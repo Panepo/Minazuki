@@ -1,12 +1,11 @@
 import face_recognition
 import numpy as np
 
+
 def faceMatch(image, data, threshold):
     # Find all the faces and face encodings in the current frame of video
     face_locations = face_recognition.face_locations(image)
-    face_encodings = face_recognition.face_encodings(
-        image, face_locations
-    )
+    face_encodings = face_recognition.face_encodings(image, face_locations)
 
     face_names = []
     for face_encoding in face_encodings:
@@ -33,12 +32,11 @@ def faceMatch(image, data, threshold):
 
     return face_locations, face_names
 
+
 def faceMatchKNN(image, knn, data, threshold):
     # Find all the faces and face encodings in the current frame of video
     face_locations = face_recognition.face_locations(image)
-    face_encodings = face_recognition.face_encodings(
-        image, face_locations
-    )
+    face_encodings = face_recognition.face_encodings(image, face_locations)
 
     closest_distances = knn.kneighbors(face_encodings, n_neighbors=1)
     face_names = []

@@ -20,10 +20,16 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
+    "--threshold",
+    type=float,
+    default=0.6,
+    help="distance threshold for face recognition.",
 )
 parser.add_argument(
-    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
+    "--pickle",
+    type=str,
+    default="./pickle/face.pickle",
+    help="path to input pickle of faces",
 )
 parser.add_argument(
     "--skip",
@@ -58,6 +64,7 @@ def prev_id(current_id):
     else:
         return current_id - 1
 
+
 # A subprocess use to capture frames.
 def capture(read_frame_list):
     # Start RealSense Camera
@@ -81,6 +88,7 @@ def capture(read_frame_list):
     # Release webcam
     rs.pipeline.stop()
 
+
 # Many subprocess use to process frames.
 def process(worker_id, read_frame_list, write_frame_list):
     known_face_encodings = Global.known_face_encodings
@@ -88,7 +96,9 @@ def process(worker_id, read_frame_list, write_frame_list):
     while not Global.is_exit:
 
         # Wait to read
-        while Global.read_num != worker_id or Global.read_num != prev_id(Global.buff_num):
+        while Global.read_num != worker_id or Global.read_num != prev_id(
+            Global.buff_num
+        ):
             time.sleep(0.01)
 
         # Delay to make the video look smoother
@@ -108,9 +118,13 @@ def process(worker_id, read_frame_list, write_frame_list):
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
         # Loop through each face in this frame of video
-        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+        for (top, right, bottom, left), face_encoding in zip(
+            face_locations, face_encodings
+        ):
             # See if the face is a match for the known face(s)
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+            matches = face_recognition.compare_faces(
+                known_face_encodings, face_encoding
+            )
 
             name = "Unknown"
 
@@ -123,9 +137,23 @@ def process(worker_id, read_frame_list, write_frame_list):
             cv.rectangle(frame_process, (left, top), (right, bottom), (0, 0, 255), 2)
 
             # Draw a label with a name below the face
-            cv.rectangle(frame_process, (left, bottom - 35), (right, bottom), (0, 0, 255), cv.FILLED)
+            cv.rectangle(
+                frame_process,
+                (left, bottom - 35),
+                (right, bottom),
+                (0, 0, 255),
+                cv.FILLED,
+            )
             font = cv.FONT_HERSHEY_DUPLEX
-            cv.putText(frame_process, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            cv.putText(
+                frame_process,
+                name,
+                (left + 6, bottom - 6),
+                font,
+                1.0,
+                (255, 255, 255),
+                1,
+            )
 
         # Wait to write
         while Global.write_num != worker_id:
@@ -137,7 +165,8 @@ def process(worker_id, read_frame_list, write_frame_list):
         # Expect next worker to write frame
         Global.write_num = next_id(Global.write_num)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Global variables
     Global = Manager().Namespace()
     Global.buff_num = 1
@@ -169,7 +198,9 @@ if __name__ == '__main__':
 
     # Create workers
     for worker_id in range(1, worker_num + 1):
-        p.append(Process(target=process, args=(worker_id, read_frame_list, write_frame_list)))
+        p.append(
+            Process(target=process, args=(worker_id, read_frame_list, write_frame_list))
+        )
         p[worker_id].start()
 
     # Start to show video
@@ -205,10 +236,12 @@ if __name__ == '__main__':
                 Global.frame_delay = 0
 
             # Display the resulting image
-            cv.imshow('Face recognition demo', write_frame_list[prev_id(Global.write_num)])
+            cv.imshow(
+                "Face recognition demo", write_frame_list[prev_id(Global.write_num)]
+            )
 
         # Hit 'q' on the keyboard to quit!
-        if cv.waitKey(1) & 0xFF == ord('q'):
+        if cv.waitKey(1) & 0xFF == ord("q"):
             Global.is_exit = True
             break
 

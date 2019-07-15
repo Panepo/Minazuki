@@ -19,10 +19,16 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
+    "--threshold",
+    type=float,
+    default=0.6,
+    help="distance threshold for face recognition.",
 )
 parser.add_argument(
-    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
+    "--pickle",
+    type=str,
+    default="./pickle/face.pickle",
+    help="path to input pickle of faces",
 )
 parser.add_argument(
     "--skip",
@@ -41,6 +47,7 @@ parser.add_argument(
     help="Toggle of display information in images.",
 )
 args = parser.parse_args()
+
 
 def main():
     # load learned faces
@@ -89,10 +96,14 @@ def main():
             if args.skip is True:
                 # Only process every other frame of video to save time
                 if process_this_frame:
-                    face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
+                    face_locations, face_names = faceMatch(
+                        rgb_small_frame, data, args.threshold
+                    )
                 process_this_frame = not process_this_frame
             else:
-                face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
+                face_locations, face_names = faceMatch(
+                    rgb_small_frame, data, args.threshold
+                )
 
             # Display the results
             drawResult(frame, face_locations, face_names, args.scale)
@@ -107,7 +118,7 @@ def main():
             # Display infomation
             if args.info is True:
                 # if not process_this_frame:
-                    # print("[INFO] " + label)
+                # print("[INFO] " + label)
                 cv.putText(
                     frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255)
                 )
@@ -118,7 +129,7 @@ def main():
             # Process screen capture
             if flagCapture:
                 print("[INFO] Screen captured")
-                saveResult(frame, 'recognition_rs')
+                saveResult(frame, "recognition_rs")
                 flagCapture = False
 
             # Keyboard commands
@@ -136,6 +147,7 @@ def main():
         # Stop streaming
         cv.destroyAllWindows()
         rs.pipeline.stop()
+
 
 if __name__ == "__main__":
     main()

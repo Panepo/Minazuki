@@ -21,10 +21,16 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
+    "--threshold",
+    type=float,
+    default=0.6,
+    help="distance threshold for face recognition.",
 )
 parser.add_argument(
-    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
+    "--pickle",
+    type=str,
+    default="./pickle/face.pickle",
+    help="path to input pickle of faces",
 )
 parser.add_argument(
     "--save",
@@ -51,6 +57,7 @@ parser.add_argument(
     help="Toggle of display information in images.",
 )
 args = parser.parse_args()
+
 
 def main():
     # load learned faces
@@ -88,10 +95,14 @@ def main():
         if args.skip:
             # Only process every other frame of video to save time
             if process_this_frame:
-                face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
+                face_locations, face_names = faceMatch(
+                    rgb_small_frame, data, args.threshold
+                )
             process_this_frame = not process_this_frame
         else:
-            face_locations, face_names = faceMatch(rgb_small_frame, data, args.threshold)
+            face_locations, face_names = faceMatch(
+                rgb_small_frame, data, args.threshold
+            )
 
         # Display the results
         drawResult(frame, face_locations, face_names, args.scale)
@@ -109,7 +120,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            saveResult(frame, 'recognition')
+            saveResult(frame, "recognition")
 
     # Release handle to the webcam
     cap.release()

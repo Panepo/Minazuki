@@ -99,7 +99,7 @@ def main():
             # Process screen capture
             if flagCapture:
                 print("[INFO] Screen captured")
-                saveResult(frame, 'detection_rs')
+                saveResult(frame, "detection_rs")
                 flagCapture = False
 
             # Keyboard commands

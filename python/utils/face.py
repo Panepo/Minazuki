@@ -2,6 +2,7 @@ import face_recognition
 import cv2 as cv
 import math
 
+
 def faceEncoding(args, imagePath):
     if args.resize:
         img = cv.imread(imagePath)
@@ -11,7 +12,9 @@ def faceEncoding(args, imagePath):
         modHeight = math.floor(args.resize * height / width)
 
         # resize image
-        bgr_image = cv.resize(img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC)
+        bgr_image = cv.resize(
+            img, (args.resize, modHeight), interpolation=cv.INTER_CUBIC
+        )
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         image = bgr_image[:, :, ::-1]

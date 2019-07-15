@@ -5,6 +5,7 @@ textFont = cv.FONT_HERSHEY_SIMPLEX
 textColor = (255, 255, 255)
 textSize = 0.5
 
+
 def drawResult(image, face_locations, face_names, scale):
     # Display the results
     for (top, right, bottom, left), name in zip(face_locations, face_names):
@@ -23,12 +24,4 @@ def drawResult(image, face_locations, face_names, scale):
         cv.rectangle(
             image, (left, bottom - 15), (right, bottom), (255, 0, 0), cv.FILLED
         )
-        cv.putText(
-            image,
-            name,
-            (left, bottom),
-            textFont,
-            textSize,
-            textColor,
-            1,
-        )
+        cv.putText(image, name, (left, bottom), textFont, textSize, textColor, 1)

@@ -128,7 +128,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            saveResult(frame, 'recognition_svm')
+            saveResult(frame, "recognition_svm")
 
     # Release handle to the webcam
     cap.release()

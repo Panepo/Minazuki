@@ -102,7 +102,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            saveResult(frame, 'detection')
+            saveResult(frame, "detection")
 
     # Release handle to the webcam
     cap.release()

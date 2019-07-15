@@ -9,9 +9,7 @@ from utils.time import transTime
 from utils.face import faceEncoding
 
 ############ Add argument parser for command line arguments ############
-parser = argparse.ArgumentParser(
-    description="Compute face distance between two images"
-)
+parser = argparse.ArgumentParser(description="Compute face distance between two images")
 parser.add_argument(
     "--inp1", type=str, required=True, help="path to the first input image."
 )
@@ -36,6 +34,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+
 def main():
     # get start time
     start_time = time.time()
@@ -55,6 +54,7 @@ def main():
     # calculate processing time
     tick = (time.time() - start_time) * 1000
     transTime(tick, "[INFO] Total process time: ")
+
 
 if __name__ == "__main__":
     main()

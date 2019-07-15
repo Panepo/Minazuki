@@ -11,7 +11,10 @@ parser = argparse.ArgumentParser(
     description="Train KNN classifier from compressed pickle file."
 )
 parser.add_argument(
-    "--pickle", type=str, default="./pickle/face.pickle", help="path to input pickle of faces"
+    "--pickle",
+    type=str,
+    default="./pickle/face.pickle",
+    help="path to input pickle of faces",
 )
 parser.add_argument(
     "--knn",
@@ -57,6 +60,7 @@ def main():
     # calculate processing time
     tick = (time.time() - start_time) * 1000
     transTime(tick, "[INFO] Total process time: ")
+
 
 if __name__ == "__main__":
     main()

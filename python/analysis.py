@@ -10,9 +10,7 @@ from utils.time import transTime
 from utils.face import faceEncoding
 
 ############ Add argument parser for command line arguments ############
-parser = argparse.ArgumentParser(
-    description="Analysis face data"
-)
+parser = argparse.ArgumentParser(description="Analysis face data")
 parser.add_argument(
     "--dataset",
     type=str,
@@ -20,7 +18,10 @@ parser.add_argument(
     help="path to input directory of faces + images",
 )
 parser.add_argument(
-    "--errors", type=str, default="./log/error.txt", help="path to output error face lists."
+    "--errors",
+    type=str,
+    default="./log/error.txt",
+    help="path to output error face lists.",
 )
 parser.add_argument(
     "--log", type=str, default="./log/log.txt", help="path to output log file."
@@ -42,9 +43,13 @@ parser.add_argument(
     help="Perform image resizing before learning.",
 )
 parser.add_argument(
-    "--threshold", type=float, default=0.6, help="distance threshold for face recognition."
+    "--threshold",
+    type=float,
+    default=0.6,
+    help="distance threshold for face recognition.",
 )
 args = parser.parse_args()
+
 
 def main():
     # get start time
@@ -66,7 +71,7 @@ def main():
     refFace = []
 
     for name in knownNames:
-        imagePaths = list(list_images(args.dataset + name + '/'))
+        imagePaths = list(list_images(args.dataset + name + "/"))
         info = "[INFO] Check face images of {}".format(name)
         print(info)
         if args.log:
@@ -89,9 +94,9 @@ def main():
                     print(face_distances[0])
                     if args.log:
                         log.append(face_distances[0])
-                    ''' ADD CONTENT
+                    """ ADD CONTENT
                     if face_distances[0] > args.threshold:
-                    '''
+                    """
                 else:
                     print("[ERROR] no face found in image {}".format(imagePath))
                     error.append(imagePath)

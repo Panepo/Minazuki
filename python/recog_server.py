@@ -2,6 +2,7 @@
 import time
 import face_recognition
 import pickle
+import time
 from utils.faceMatch import faceMatch
 from flask import Flask, jsonify, request, redirect
 
@@ -51,6 +52,9 @@ def upload_image():
 
 
 def detect_faces_in_image(file_stream):
+    # Save program start time
+    start_time = time.time()
+
     # Load the uploaded image file
     img = face_recognition.load_image_file(file_stream)
     # Get face encodings for any faces in the uploaded image
@@ -61,8 +65,11 @@ def detect_faces_in_image(file_stream):
     if len(face_names) > 0:
         face_found = True
 
+    # Calculate processing time
+    process_time = "%.2f ms" % ((time.time() - start_time) * 1000)
+
     # Return the result as json
-    result = {"face_found_in_image": face_found, "face_found": face_names}
+    result = {"face_found_in_image": face_found, "face_found": face_names, "process_time": process_time}
     return jsonify(result)
 
 

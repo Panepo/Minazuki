@@ -9,22 +9,7 @@ import {
 } from './utils'
 import { createFaceMatcher } from './utils/faceMatch'
 
-// process argument
-const input = process.argv[2]
-
-if (!input) {
-  console.error("[ERROR] the path of input image is required")
-  process.exit(0)
-}
-
-let json = process.argv[3]
-
-if (!input) {
-  json = './json/faces_all.json'
-}
-
-
-async function run(input: string, json: string) {
+async function run() {
   // load face recognition model
   await faceDetectionNet.loadFromDisk(modelLink)
   await faceapi.nets.faceLandmark68Net.loadFromDisk(modelLink)
@@ -34,13 +19,13 @@ async function run(input: string, json: string) {
   const tstart = process.hrtime()
 
   // load the learned faces
-  const contents = await fs.readFileSync(json) as any
+  const contents = await fs.readFileSync('./json/faces_all.json') as any
   const faces = JSON.parse(contents)
   // create face matcher
   const faceMatcher = await createFaceMatcher(faces)
 
   // open an image file
-  const img = await canvas.loadImage(input)
+  const img = await canvas.loadImage('../images/pos1.jpg')
   // find all the faces and face encodings in the current image
   const results = await faceapi
     .detectAllFaces(img, faceDetectionOptions)
@@ -66,4 +51,4 @@ async function run(input: string, json: string) {
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)
 }
 
-run(input, json)
+run()

@@ -7,7 +7,15 @@ import {
   modelLink
 } from './utils'
 
-async function run() {
+// process argument
+const input = process.argv[2]
+
+if (!input) {
+  console.error("[ERROR] the path of input image is required")
+  process.exit(0)
+}
+
+async function run(input: string) {
   // load face recognition model
   await faceDetectionNet.loadFromDisk(modelLink)
 
@@ -15,7 +23,7 @@ async function run() {
   const tstart = process.hrtime()
 
   // open an image file
-  const img = await canvas.loadImage('../images/h1.jpg')
+  const img = await canvas.loadImage(input)
   // find all the faces and face encodings in the current image
   const detections = await faceapi.detectAllFaces(img, faceDetectionOptions)
 
@@ -32,4 +40,4 @@ async function run() {
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)
 }
 
-run()
+run(input)

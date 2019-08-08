@@ -18,7 +18,6 @@
     "javascript.updateImportsOnFileMove.enabled": "never",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorTheme": "Dark+ Material",
-    "flow.useNPMPackagedFlow": true,
     "javascript.validate.enable": false,
     "javascript.format.enable": false,
 }

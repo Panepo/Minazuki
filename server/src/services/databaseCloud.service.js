@@ -6,9 +6,7 @@ import logger from './logger.service'
 const databaseKey = 'databaseCloud'
 const database = environment[databaseKey]
 
-const CONNECTION_URL = `mongodb+srv://${database.username}:${
-  database.password
-}@${database.connection}`
+const CONNECTION_URL = `mongodb+srv://${database.username}:${database.password}@${database.connection}`
 // const DATABASE_NAME = database.name;
 
 // MONGO_DB_ATLAS

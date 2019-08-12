@@ -11,13 +11,21 @@ import { createFaceMatcher } from './utils/faceMatch'
 
 // process argument
 const input = process.argv[2]
+let json = process.argv[3]
 
 if (!input) {
   console.error("[ERROR] the path of input image is required")
   process.exit(0)
 }
 
-async function run(input: string) {
+if (!json) {
+  console.info("[INFO] load the default face data")
+  json = './json/faces_all.json'
+} else {
+  console.info("[INFO] load the face data: " + json)
+}
+
+async function run(input: string, json: string) {
   // load face recognition model
   await faceDetectionNet.loadFromDisk(modelLink)
   await faceapi.nets.faceLandmark68Net.loadFromDisk(modelLink)
@@ -61,4 +69,4 @@ async function run(input: string) {
   console.info('[INFO] total process time: %dms', tend[1] / 1000000)
 }
 
-run(input)
+run(input, json)

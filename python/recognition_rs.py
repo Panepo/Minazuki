@@ -8,7 +8,7 @@ import pickle
 from utils.realsense import realsense, rsOptions
 from utils.argument import str2bool
 from utils.save import saveResult
-from utils.draw import drawResult
+from utils.draw import drawRecognition
 from utils.faceMatch import faceMatch
 
 ############ Add argument parser for command line arguments ############
@@ -106,7 +106,7 @@ def main():
                 )
 
             # Display the results
-            drawResult(frame, face_locations, face_names, args.scale)
+            drawRecognition(frame, face_locations, face_names, args.scale)
 
             # Calculate processing time
             if args.skip is True:

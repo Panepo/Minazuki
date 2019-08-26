@@ -6,6 +6,7 @@ import time
 import face_recognition
 from utils.argument import str2bool
 from utils.save import saveResult
+from utils.draw import drawDetection
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -14,6 +15,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--input",
     help="Path to input image or video file. Skip this argument to capture frames from a camera.",
+)
+parser.add_argument(
+    "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
     "--save",
@@ -64,7 +68,7 @@ def main():
             break
 
         # Resize frame of video to 1/4 size for faster face recognition processing
-        small_frame = cv.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        small_frame = cv.resize(frame, (0, 0), fx=args.scale, fy=args.scale)
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]
@@ -79,15 +83,7 @@ def main():
             face_locations = face_recognition.face_locations(rgb_small_frame)
 
         # Display the results
-        for (top, right, bottom, left) in face_locations:
-            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-            top *= 4
-            right *= 4
-            bottom *= 4
-            left *= 4
-
-            # Draw a box around the face
-            cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+        drawDetection(frame, face_locations, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)

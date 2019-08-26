@@ -9,7 +9,7 @@ from multiprocessing import Process, Manager, cpu_count
 from utils.realsense import realsense, rsOptions
 from utils.argument import str2bool
 from utils.save import saveResult
-from utils.draw import drawResult
+from utils.draw import drawRecognition
 from utils.faceMatch import faceMatch
 
 ############ Add argument parser for command line arguments ############

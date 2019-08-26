@@ -9,7 +9,7 @@ import pickle
 from sklearn import svm
 from utils.argument import str2bool
 from utils.save import saveResult
-from utils.draw import drawResult
+from utils.draw import drawRecognition
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
@@ -113,7 +113,7 @@ def main():
                 face_names.append(name[0])
 
         # Display the results
-        drawResult(frame, face_locations, face_names, args.scale)
+        drawRecognition(frame, face_locations, face_names, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)

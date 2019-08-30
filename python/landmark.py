@@ -1,17 +1,16 @@
 # Import required modules
 import cv2 as cv
+import math
 import argparse
 import time
 import face_recognition
-import pickle
 from utils.argument import str2bool
 from utils.save import saveResult
-from utils.draw import drawRecognition, drawLandmarks
-from utils.faceMatch import faceMatch
+from utils.draw import drawDetection, drawLandmarks
 
 ############ Add argument parser for command line arguments ############
 parser = argparse.ArgumentParser(
-    description="Face recognition demo with OpenCV, dlib and face_recognition libraries."
+    description="Face landmark detection demo with OpenCV, dlib and face_recognition libraries."
 )
 parser.add_argument(
     "--input",
@@ -21,32 +20,12 @@ parser.add_argument(
     "--scale", type=float, default=0.5, help="scale factor of input image pre-resize."
 )
 parser.add_argument(
-    "--threshold",
-    type=float,
-    default=0.6,
-    help="distance threshold for face recognition.",
-)
-parser.add_argument(
-    "--pickle",
-    type=str,
-    default="./pickle/face.pickle",
-    help="path to input pickle of faces",
-)
-parser.add_argument(
     "--save",
     type=str2bool,
     nargs="?",
     const=True,
     default=False,
     help="Toggle of save the generated image.",
-)
-parser.add_argument(
-    "--landmark",
-    type=str2bool,
-    nargs="?",
-    const=True,
-    default=False,
-    help="Toggle of draw facial landmark.",
 )
 parser.add_argument(
     "--skip",
@@ -68,18 +47,12 @@ args = parser.parse_args()
 
 
 def main():
-    # load learned faces
-    print("[INFO] loading faces ...")
-    # check the image source comes from
-    print("[INFO] faces loaded from {} ...".format(args.pickle))
-    data = pickle.loads(open(args.pickle, "rb").read())
-
     # Initialize some variables
     face_locations = []
     process_this_frame = True
 
     # Create a new named window
-    kWinName = "Face recognition demo"
+    kWinName = "Face landmark detection demo"
 
     # Open a video file or an image file or a camera stream
     cap = cv.VideoCapture(args.input if args.input else 0)
@@ -94,7 +67,7 @@ def main():
             cv.waitKey()
             break
 
-        # Resize frame of video to 1/2 size for faster face recognition processing
+        # Resize frame of video to 1/4 size for faster face recognition processing
         small_frame = cv.resize(frame, (0, 0), fx=args.scale, fy=args.scale)
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
@@ -103,28 +76,21 @@ def main():
         if args.skip:
             # Only process every other frame of video to save time
             if process_this_frame:
-                face_locations, face_names = faceMatch(
-                    rgb_small_frame, data, args.threshold
-                )
-                if args.landmark:
-                    face_landmarks = face_recognition.face_landmarks(
-                        rgb_small_frame, face_locations
-                    )
-            process_this_frame = not process_this_frame
-        else:
-            face_locations, face_names = faceMatch(
-                rgb_small_frame, data, args.threshold
-            )
-            if args.landmark:
+                # Find all the faces and face encodings in the current frame of video
+                face_locations = face_recognition.face_locations(rgb_small_frame)
                 face_landmarks = face_recognition.face_landmarks(
                     rgb_small_frame, face_locations
                 )
-
-        if args.landmark:
-            drawLandmarks(frame, face_landmarks, args.scale)
+            process_this_frame = not process_this_frame
+        else:
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            face_landmarks = face_recognition.face_landmarks(
+                rgb_small_frame, face_locations
+            )
 
         # Display the results
-        drawRecognition(frame, face_locations, face_names, args.scale)
+        drawDetection(frame, face_locations, args.scale)
+        drawLandmarks(frame, face_landmarks, args.scale)
 
         # Calculate processing time
         label = "Process time: %.2f ms" % ((time.time() - start_time) * 1000)
@@ -139,7 +105,7 @@ def main():
 
         # Save results
         if args.save and args.input:
-            saveResult(frame, "recognition")
+            saveResult(frame, "detection")
 
     # Release handle to the webcam
     cap.release()

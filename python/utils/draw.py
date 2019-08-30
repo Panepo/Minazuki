@@ -1,10 +1,8 @@
 import cv2 as cv
 import math
 
-textFont = cv.FONT_HERSHEY_SIMPLEX
-textColor = (255, 255, 255)
-textSize = 0.5
-
+rectColor = (0, 255, 0)
+rectWidth = 2
 
 def drawDetection(image, face_locations, scale):
     # Display the results
@@ -18,7 +16,14 @@ def drawDetection(image, face_locations, scale):
             left *= scaleV
 
         # Draw a box around the face
-        cv.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+        cv.rectangle(image, (left, top), (right, bottom), rectColor, rectWidth)
+
+
+textFont = cv.FONT_HERSHEY_SIMPLEX
+textColor = (255, 255, 255)
+textSize = 0.8
+labelColor = (255, 0, 0)
+labelSize = 20
 
 
 def drawRecognition(image, face_locations, face_names, scale):
@@ -33,17 +38,19 @@ def drawRecognition(image, face_locations, face_names, scale):
             left *= scaleV
 
         # Draw a box around the face
-        cv.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+        cv.rectangle(image, (left, top), (right, bottom), rectColor, rectWidth)
 
         # Draw a label with a name below the face
         cv.rectangle(
-            image, (left, bottom - 15), (right, bottom), (255, 0, 0), cv.FILLED
+            image, (left, bottom - labelSize), (right, bottom + math.floor(labelSize / 2)), (255, 0, 0), cv.FILLED
         )
-        cv.putText(image, name, (left, bottom), textFont, textSize, textColor, 1)
+        cv.putText(image, name, (left, bottom), textFont, textSize, textColor, 3)
 
 
-colorLMLine = (255, 255, 0)
-colorLMDot = (255, 0, 255)
+landLineColor = (255, 255, 0)
+landLineSize = 1
+landDotColor = (255, 0, 255)
+landDotSize = 3
 
 
 def drawLandmarks(image, face_landmarks, scale):
@@ -67,23 +74,23 @@ def drawLMCurve(image, face_landmarks, scaleV):
     for i in range(0, len(face_landmarks) - 1):
         pos1 = tuple([scaleV * x for x in face_landmarks[i]])
         pos2 = tuple([scaleV * x for x in face_landmarks[i + 1]])
-        cv.line(image, pos1, pos2, colorLMLine, 1)
+        cv.line(image, pos1, pos2, landLineColor, landLineSize)
 
     for face_landmark in face_landmarks:
         pos = tuple([scaleV * x for x in face_landmark])
-        cv.circle(image, pos, 3, colorLMDot, -1)
+        cv.circle(image, pos, landDotSize, landDotColor, -1)
 
 
 def drawLMPolygon(image, face_landmarks, scaleV):
     for i in range(0, len(face_landmarks) - 1):
         pos1 = tuple([scaleV * x for x in face_landmarks[i]])
         pos2 = tuple([scaleV * x for x in face_landmarks[i + 1]])
-        cv.line(image, pos1, pos2, colorLMLine, 1)
+        cv.line(image, pos1, pos2, landLineColor, landLineSize)
 
     pos1 = tuple([scaleV * x for x in face_landmarks[0]])
     pos2 = tuple([scaleV * x for x in face_landmarks[-1]])
-    cv.line(image, pos1, pos2, colorLMLine, 1)
+    cv.line(image, pos1, pos2, landLineColor, landLineSize)
 
     for face_landmark in face_landmarks:
         pos = tuple([scaleV * x for x in face_landmark])
-        cv.circle(image, pos, 3, colorLMDot, -1)
+        cv.circle(image, pos, landDotSize, landDotColor, -1)

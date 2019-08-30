@@ -22,6 +22,7 @@ def drawDetection(image, face_locations, scale):
 textFont = cv.FONT_HERSHEY_SIMPLEX
 textColor = (255, 255, 255)
 textSize = 0.8
+textWidth = 2
 labelColor = (255, 0, 0)
 labelSize = 20
 
@@ -44,7 +45,7 @@ def drawRecognition(image, face_locations, face_names, scale):
         cv.rectangle(
             image, (left, bottom - labelSize), (right, bottom + math.floor(labelSize / 2)), (255, 0, 0), cv.FILLED
         )
-        cv.putText(image, name, (left, bottom), textFont, textSize, textColor, 3)
+        cv.putText(image, name, (left, bottom), textFont, textSize, textColor, textWidth)
 
 
 landLineColor = (255, 255, 0)

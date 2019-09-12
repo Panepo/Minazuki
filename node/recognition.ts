@@ -14,15 +14,19 @@ const input = process.argv[2]
 let json = process.argv[3]
 
 if (!input) {
-  console.error("[ERROR] the path of input image is required")
+  console.error('[ERROR] the path of input image is required')
   process.exit(0)
 }
 
 if (!json) {
-  console.info("[INFO] load the default face data")
+  console.info('[INFO] load the default face data')
   json = './json/faces_all.json'
 } else {
-  console.info("[INFO] load the face data: " + json)
+  console.info('[INFO] load the face data: ' + json)
+}
+
+const drawLabelOptions = {
+  fontSize: 22
 }
 
 async function run(input: string, json: string) {
@@ -35,7 +39,7 @@ async function run(input: string, json: string) {
   const tstart = process.hrtime()
 
   // load the learned faces
-  const contents = await fs.readFileSync('./json/faces_all.json') as any
+  const contents = (await fs.readFileSync('./json/faces_all.json')) as any
   const faces = JSON.parse(contents)
   // create face matcher
   const faceMatcher = await createFaceMatcher(faces)
@@ -52,12 +56,15 @@ async function run(input: string, json: string) {
   if (results) {
     const queryDrawBoxes = results.map(res => {
       const bestMatch = faceMatcher.findBestMatch(res.descriptor)
-      return new faceapi.draw.DrawBox(res.detection.box, { label: bestMatch.toString() })
+      return new faceapi.draw.DrawBox(res.detection.box, {
+        label: bestMatch.toString(),
+        drawLabelOptions: drawLabelOptions
+      })
     })
     const outQuery = faceapi.createCanvasFromMedia(img)
     queryDrawBoxes.forEach(drawBox => drawBox.draw(outQuery))
 
-    faceapi.draw.drawFaceLandmarks(outQuery, results.map(res => res.landmarks))
+    // faceapi.draw.drawFaceLandmarks(outQuery, results.map(res => res.landmarks))
 
     // save results
     saveFile('recognition', (outQuery as any).toBuffer('image/jpeg'))

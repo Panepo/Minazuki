@@ -22,7 +22,7 @@ async function run() {
     fs.mkdirSync(baseDir)
   }
   const fileName = 'analysis_log_' + new Date().getTime().toString() + '.txt'
-  const log = fs.createWriteStream(path.resolve(baseDir, fileName),)
+  const log = fs.createWriteStream(path.resolve(baseDir, fileName))
 
   await Promise.all(
     userList.map(async (user: { name: string; files: string[] }) => {
@@ -33,12 +33,16 @@ async function run() {
           const img = await canvas.loadImage('..' + file)
           if (index === 0) {
             // find the face and face encodings in the current image and save as reference
-            refDescriptor = await faceapi.computeFaceDescriptor(img) as Float32Array
+            refDescriptor = (await faceapi.computeFaceDescriptor(
+              img
+            )) as Float32Array
             console.info('[INFO] processing user ' + user.name)
             log.write('[INFO] processing user ' + user.name + '\n')
           } else {
             // find the face and face encodings in the current image
-            const descriptor = await faceapi.computeFaceDescriptor(img) as Float32Array
+            const descriptor = (await faceapi.computeFaceDescriptor(
+              img
+            )) as Float32Array
 
             // compute the euclidean distance of two images
             const dist = faceapi.euclideanDistance(descriptor, refDescriptor)

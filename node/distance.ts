@@ -1,22 +1,18 @@
 import * as faceapi from 'face-api.js'
-import {
-  canvas,
-  faceDetectionNet,
-  modelLink
-} from './utils'
+import { canvas, faceDetectionNet, modelLink } from './utils'
 
 // process argument
 const input1 = process.argv[2]
 
 if (!input1) {
-  console.error("[ERROR] the path of the first input image is required")
+  console.error('[ERROR] the path of the first input image is required')
   process.exit(0)
 }
 
 const input2 = process.argv[3]
 
 if (!input2) {
-  console.error("[ERROR] the path of the second input image is required")
+  console.error('[ERROR] the path of the second input image is required')
   process.exit(0)
 }
 
@@ -32,12 +28,16 @@ async function run(input1, input2) {
   // open an image file
   const img1 = await canvas.loadImage(input1)
   // find all the faces and face encodings in the current image
-  const descriptors1 = await faceapi.computeFaceDescriptor(img1) as Float32Array
+  const descriptors1 = (await faceapi.computeFaceDescriptor(
+    img1
+  )) as Float32Array
 
   // open an image file
   const img2 = await canvas.loadImage(input2)
   // find all the faces and face encodings in the current image
-  const descriptors2 = await faceapi.computeFaceDescriptor(img2) as Float32Array
+  const descriptors2 = (await faceapi.computeFaceDescriptor(
+    img2
+  )) as Float32Array
 
   // compute the euclidean distance of two images
   const dist = faceapi.euclideanDistance(descriptors1, descriptors2)

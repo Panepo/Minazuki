@@ -11,7 +11,7 @@ import {
 const input = process.argv[2]
 
 if (!input) {
-  console.error("[ERROR] the path of input image is required")
+  console.error('[ERROR] the path of input image is required')
   process.exit(0)
 }
 

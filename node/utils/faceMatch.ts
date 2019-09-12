@@ -1,7 +1,7 @@
 import * as faceapi from 'face-api.js'
 
 export async function createFaceMatcher(
-  data: { _label: string, _descriptors: any }[],
+  data: { _label: string; _descriptors: any }[],
   distanceThreshold: number = 0.6
 ) {
   const labeledFaceDescriptors = await Promise.all(

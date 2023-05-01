@@ -1,5 +1,5 @@
 numpy==1.22.0
 face_recognition==1.2.3
-Flask==1.0.2
+Flask==2.3.2
 pyrealsense2==2.24.0.965
 scikit_learn==0.21.2
